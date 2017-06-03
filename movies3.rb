@@ -15,12 +15,9 @@ search_name = ARGV[0]
 movies_file = ARGV[1] || DEFAULT_PATH
 abort("This file doesn't exist") unless File.file?(movies_file)
 
-movies = []
 keys = %i[link name year country release genres length rating producer actors]
-db = File.new(movies_file, 'r')
-db.each_line do |line|
-  movie_params = line.split('|')
-  movies << keys.zip(movie_params).to_h
+movies = File.open(movies_file, 'r').map do |line|
+  keys.zip(line.split('|')).to_h
 end
 
 sorted = movies.sort_by { |movie| movie[:length].to_i }.last(5).reverse
@@ -41,12 +38,13 @@ end
 puts "\nThe first ten comedies are:"
 puts movies_list(sorted.first(10))
 
-producers = movies.collect { |movie| movie[:producer] }.uniq
-sorted = producers.sort_by { |producer| producer.split.last }
+producers = movies
+  .collect { |movie| movie[:producer] }.uniq
+  .sort_by { |producer| producer.split.last }
 
 puts "\nList of producers:"
-puts sorted
+puts producers
 
-foreign_movies = movies.select { |movie| movie[:country] != 'USA' }
+foreign_movies = movies.count { |movie| movie[:country] != 'USA' }
 
-puts "\nCount of non-USA movies - #{foreign_movies.size}"
+puts "\nCount of non-USA movies - #{foreign_movies}"
