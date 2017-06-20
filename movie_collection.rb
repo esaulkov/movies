@@ -23,12 +23,12 @@ class MovieCollection
 
   def filter(params)
     movies.select do |movie|
-      params.all? { |key, value| movie.has_attr?(key, value) }
+      params.all? { |key, value| movie.matches?(key, value) }
     end
   end
 
   def genres
-    movies.map(&:genres).flatten.uniq
+    @genres ||= movies.flat_map(&:genres).uniq
   end
 
   def sort_by(field)

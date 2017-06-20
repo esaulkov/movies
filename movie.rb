@@ -23,18 +23,12 @@ class Movie
     @genres.split(',')
   end
 
-  def has_attr?(key, value)
+  def matches?(key, value)
     attr = public_send(key)
     if attr.is_a?(Array)
-      if value.is_a?(Regexp)
-        attr.select { |attribute| attribute[value] }.any?
-      else
-        attr.include?(value)
-      end
-    elsif value.is_a?(Range)
-      value.include?(attr)
+      attr.any? { |attribute| value === attribute }
     else
-      attr === value
+      value === attr
     end
   end
 
@@ -63,7 +57,7 @@ class Movie
   end
 
   def to_s
-    "#{name} (#{release}; #{country}; #{@genres.tr(/,/, '/')}) - #{length} min"
+    "#{name} (#{release}; #{country}; #{@genres.gsub(/,/, '/')}) - #{length} min"
   end
 
   def year
