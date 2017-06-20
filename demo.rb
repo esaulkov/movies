@@ -13,7 +13,7 @@ begin
   puts movies.all.first.actors
 
   puts "\nThe five longest movies are:"
-  puts movies.sort_by(:length).first(5)
+  puts movies.sort_by(:length).reverse.first(5)
 
   puts "\nList of british comedies:"
   puts movies.filter(genres: 'Comedy', country: 'UK')

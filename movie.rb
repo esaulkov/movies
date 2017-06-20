@@ -1,40 +1,72 @@
 # coding: utf-8
 
+require 'date'
+
 class Movie
-  GENRES = %w[
-    Action Adventure Animation Biography Comedy Crime Drama Family Fantasy
-    Film-Noir History Horror Music Musical Mystery Romance Sci-Fi Sport
-    Thriller War Western
+  PARAMS = %i[
+    link name year country release genres length
+    rating producer actors collection
   ].freeze
-  PARAMS = %i[link name year country release genres length rating producer actors].freeze
-  attr_accessor *PARAMS
+  attr_reader :link, :name, :country, :release, :producer, :collection
 
   def initialize(hsh = {})
     hsh
       .keep_if { |key, _| PARAMS.include?(key) }
-      .each { |key, value| public_send("#{key}=", value) }
+      .each { |key, value| instance_variable_set("@#{key}", value) }
   end
 
-  def actors_list
-    actors.split(',')
+  def actors
+    @actors.split(',')
   end
 
-  def genres_list
-    genres.split(',')
+  def genres
+    @genres.split(',')
+  end
+
+  def has_attr?(key, value)
+    attr = public_send(key)
+    if attr.is_a?(Array)
+      if value.is_a?(Regexp)
+        attr.select { |attribute| attribute[value] }.any?
+      else
+        attr.include?(value)
+      end
+    elsif value.is_a?(Range)
+      value.include?(attr)
+    else
+      attr === value
+    end
   end
 
   def has_genre?(string)
-    unless GENRES.include?(string)
+    unless @collection.genres.include?(string)
       raise ArgumentError, "This genre (#{string}) does not exist"
     end
     genres.include?(string)
   end
 
   def inspect
-    "\n" + to_s
+    "#<Movie #{self}>"
+  end
+
+  def length
+    @length.to_i
+  end
+
+  def month
+    return if release.size < 5
+    Date.strptime(release, '%Y-%m').month
+  end
+
+  def rating
+    @rating.to_f
   end
 
   def to_s
-    "#{name} (#{release}; #{country}; #{genres.gsub(/,/, '/')}) - #{length}"
+    "#{name} (#{release}; #{country}; #{@genres.tr(/,/, '/')}) - #{length} min"
+  end
+
+  def year
+    @year.to_i
   end
 end
