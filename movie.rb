@@ -24,11 +24,11 @@ class Movie
   end
 
   def matches?(key, value)
-    attr = public_send(key)
-    if attr.is_a?(Array)
-      attr.any? { |attribute| value === attribute }
+    attribute = public_send(key)
+    if attribute.is_a?(Array)
+      attribute.any? { |elem| value === elem }
     else
-      value === attr
+      value === attribute
     end
   end
 
