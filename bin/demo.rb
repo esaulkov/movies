@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-require_relative 'movie_collection'
+$LOAD_PATH.unshift(File.expand_path('../lib', 'lib'))
+require 'movies'
 
 movies = MovieCollection.new(ARGV[0])
 

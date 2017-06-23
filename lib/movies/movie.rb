@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 require 'date'
 
@@ -57,7 +58,8 @@ class Movie
   end
 
   def to_s
-    "#{name} (#{release}; #{country}; #{@genres.gsub(/,/, '/')}) - #{length} min"
+    "#{name} (#{release}; #{country}; #{@genres.to_s.tr(',', '/')})
+     - #{length} min"
   end
 
   def year
