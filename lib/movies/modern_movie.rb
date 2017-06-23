@@ -5,6 +5,6 @@ require_relative 'movie'
 
 class ModernMovie < Movie
   def to_s
-    "#{name} - современное кино, играют #{@actors})"
+    "#{name} - современное кино, играют #{@actors}"
   end
 end

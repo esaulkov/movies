@@ -5,6 +5,6 @@ require_relative 'movie'
 
 class ClassicMovie < Movie
   def to_s
-    "#{name} - классический фильм, режиссер #{producer})"
+    "#{name} - классический фильм, режиссер #{producer}"
   end
 end

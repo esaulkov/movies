@@ -13,7 +13,14 @@ class MovieCollection
     abort("This file doesn't exist") unless File.file?(movies_file)
 
     @movies = CSV.read(movies_file, col_sep: '|', headers: Movie::PARAMS).map do |row|
-      Movie.new(row.to_h.merge(collection: self))
+      params = row.to_h.merge(collection: self)
+      case params[:year].to_i
+      when 1900..1945 then AncientMovie.new(params)
+      when 1946..1968 then ClassicMovie.new(params)
+      when 1969..2000 then ModernMovie.new(params)
+      when 2000..Date.today.year then NewMovie.new(params)
+      else Movie.new(params)
+      end
     end
   end
 
