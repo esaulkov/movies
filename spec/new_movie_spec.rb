@@ -7,10 +7,10 @@ describe NewMovie, type: :model do
   describe '#to_s' do
     let (:movie) do
       NewMovie.new(
-          name: 'The best movie',
-          producer: "It's me",
-          actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley',
-          year: '2012'
+        name: 'The best movie',
+        producer: "It's me",
+        actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley',
+        year: '2012'
       )
     end
     subject { movie.to_s }

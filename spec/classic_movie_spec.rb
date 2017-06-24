@@ -7,10 +7,10 @@ describe ClassicMovie do
   describe '#to_s' do
     let (:movie) do
       ClassicMovie.new(
-          name: 'The best movie',
-          producer: "It's me",
-          actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley',
-          year: '1964'
+        name: 'The best movie',
+        producer: "It's me",
+        actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley',
+        year: '1964'
       )
     end
     subject { movie.to_s }
