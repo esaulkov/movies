@@ -10,13 +10,25 @@ describe Netflix do
   describe '#show' do
     subject { netflix.show(genre: 'Comedy', period: :classic) }
 
-    it 'filters movies by params' do
-      is_expected.to be an_instance_of(ClassicMovie)
-      expect(subject.genres).to include('Comedy')
+    context 'when balance is positive' do
+      before(:each) { netflix.pay(100) }
+
+      it 'filters movies by params' do
+        is_expected.to match('классический')
+        is_expected.to match('Comedy')
+      end
+
+      it 'reduces amount of money' do
+        expect { subject }.to change { netflix.balance }.from(100).to(98.5)
+      end
     end
 
-    it 'reduces amount of money' do
-      expect { subject }.to change { netflix.balance }.from(0).to(-1.5)
+    context 'when balance is negative' do
+      it 'raises an exception' do
+        expect { subject }.to raise_error(
+          ArgumentError, a_string_starting_with('Не хватает денег')
+        )
+      end
     end
   end
 

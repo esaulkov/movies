@@ -4,6 +4,7 @@ require 'spec_helper'
 require 'movies/theatre'
 
 describe Theatre do
+  let! (:collection) { MovieCollection.new }
   let(:theatre) { Theatre.new(collection) }
 
   describe '#show' do
@@ -33,7 +34,7 @@ describe Theatre do
   describe '#when?' do
     subject { theatre.when?('Seven Samurai') }
 
-    it 'returns time according movie genre' do
+    it 'returns time according movie genre or year' do
       is_expected.to eq('вечером')
     end
   end
