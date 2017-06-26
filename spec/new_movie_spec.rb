@@ -1,8 +1,5 @@
 # coding: utf-8
 
-require 'spec_helper'
-require 'movies/new_movie'
-
 describe NewMovie, type: :model do
   describe '#to_s' do
     let (:movie) do

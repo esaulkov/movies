@@ -1,8 +1,5 @@
 # coding: utf-8
 
-require 'spec_helper'
-require 'movies/theatre'
-
 describe Theatre do
   let! (:collection) { MovieCollection.new }
   let(:theatre) { Theatre.new(collection) }
@@ -29,13 +26,22 @@ describe Theatre do
         is_expected.to include('Drama').or include('Horror')
       end
     end
+
+    context 'when it is night' do
+      subject { theatre.show('02:00') }
+
+      it 'shows error message' do
+        is_expected.to eq('Извините, ночью сеансов нет.')
+      end
+    end
   end
 
   describe '#when?' do
-    subject { theatre.when?('Seven Samurai') }
-
     it 'returns time according movie genre or year' do
-      is_expected.to eq('вечером')
+      expect(theatre.when?('The Wizard of Oz')).to eq('утром или днем')
+      expect(theatre.when?('Groundhog Day')).to eq('днем')
+      expect(theatre.when?('Seven Samurai')).to eq('вечером')
+      expect(theatre.when?('The Terminator')).to eq('этот фильм в нашем театре не транслируется')
     end
   end
 end

@@ -1,8 +1,5 @@
 # coding: utf-8
 
-require 'spec_helper'
-require 'movies/modern_movie'
-
 describe ModernMovie do
   describe '#to_s' do
     let (:movie) do
