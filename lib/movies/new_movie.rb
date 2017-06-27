@@ -4,6 +4,14 @@
 require_relative 'movie'
 
 class NewMovie < Movie
+  def period
+    :new
+  end
+
+  def price
+    5
+  end
+
   def to_s
     "#{name} - новинка, вышло #{years_from_release}! (#{@genres})"
   end

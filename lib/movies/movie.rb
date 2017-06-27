@@ -20,6 +20,10 @@ class Movie
     @actors.split(',')
   end
 
+  def genre
+    genres
+  end
+
   def genres
     @genres.split(',')
   end
@@ -64,5 +68,15 @@ class Movie
 
   def year
     @year.to_i
+  end
+
+  def self.create(params)
+    case params[:year].to_i
+    when 1900..1945 then AncientMovie.new(params)
+    when 1946..1968 then ClassicMovie.new(params)
+    when 1969..2000 then ModernMovie.new(params)
+    when 2000..Date.today.year then NewMovie.new(params)
+    else self.new(params)
+    end
   end
 end

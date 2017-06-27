@@ -3,24 +3,36 @@
 
 require 'time'
 
-class Theatre
+class Theatre < Cinema
+  SCHEDULE = {
+    morning: {period: :ancient},
+    day: {genres: ['Comedy', 'Adventure']},
+    evening: {genres: ['Drama', 'Horror']}
+  }.freeze
+
+  TIME_PERIODS = {
+    morning: Time.parse('05:00')..Time.parse('10:59'),
+    day: Time.parse('11:00')..Time.parse('16:59'),
+    evening: Time.parse('17:00')..Time.parse('23:59')
+  }.freeze
+
   def initialize(collection)
-    @collection = collection
+    super
   end
 
   def show(time)
-    selection =
-      case Time.parse(time)
-      when Time.parse('05:00')..Time.parse('10:59')
-        @collection.filter(year: 1900..1945)
-      when Time.parse('11:00')..Time.parse('16:59')
-        (@collection.filter(genres: 'Comedy') + @collection.filter(genres: 'Adventure')).uniq
-      when Time.parse('17:00')..Time.parse('23:59')
-        (@collection.filter(genres: 'Drama') + @collection.filter(genres: 'Horror')).uniq
+    period = TIME_PERIODS.select { |key, value| value === Time.parse(time) }.keys.first
+    return 'Извините, ночью сеансов нет.' if period.nil?
+
+    selection = SCHEDULE[period].flat_map do |key, value|
+      if value.is_a?(Array)
+        value.flat_map { |item| @collection.filter(Hash[key, item]) }
       else
-        collection.all
+        @collection.filter(Hash[key, value])
       end
-    "Now showing: #{selection.sample}"
+    end.uniq
+
+    translate(choice(selection))
   end
 
   def when?(name)
@@ -35,6 +47,10 @@ class Theatre
       periods << 'вечером'
     end
 
-    periods.join(' или ')
+    if periods.empty?
+      'этот фильм в нашем театре не транслируется'
+    else
+      periods.join(' или ')
+    end
   end
 end

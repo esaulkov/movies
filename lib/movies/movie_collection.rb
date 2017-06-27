@@ -1,7 +1,6 @@
 # coding: utf-8
 
 require 'csv'
-require_relative 'movie'
 
 class MovieCollection
   DEFAULT_PATH = 'movies.txt'.freeze
@@ -14,13 +13,7 @@ class MovieCollection
 
     @movies = CSV.read(movies_file, col_sep: '|', headers: Movie::PARAMS).map do |row|
       params = row.to_h.merge(collection: self)
-      case params[:year].to_i
-      when 1900..1945 then AncientMovie.new(params)
-      when 1946..1968 then ClassicMovie.new(params)
-      when 1969..2000 then ModernMovie.new(params)
-      when 2000..Date.today.year then NewMovie.new(params)
-      else Movie.new(params)
-      end
+      Movie.create(params)
     end
   end
 
