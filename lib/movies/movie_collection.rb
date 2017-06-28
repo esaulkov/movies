@@ -1,7 +1,6 @@
 # coding: utf-8
 
 require 'csv'
-require_relative 'movie'
 
 class MovieCollection
   DEFAULT_PATH = 'movies.txt'.freeze
@@ -13,7 +12,8 @@ class MovieCollection
     abort("This file doesn't exist") unless File.file?(movies_file)
 
     @movies = CSV.read(movies_file, col_sep: '|', headers: Movie::PARAMS).map do |row|
-      Movie.new(row.to_h.merge(collection: self))
+      params = row.to_h.merge(collection: self)
+      Movie.create(params)
     end
   end
 
