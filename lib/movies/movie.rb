@@ -29,13 +29,9 @@ class Movie
   end
 
   def matches?(key, value)
-    attribute = public_send(key)
-    if attribute.is_a?(Array)
-      attribute.any? do |elem|
-        value === elem || (value.is_a?(Array) && value.member?(elem))
-      end
-    else
-      value === attribute
+    attribute = Array(public_send(key))
+    Array(value).any? do |filter_val|
+      attribute.any? { |attr_val| filter_val === attr_val }
     end
   end
 
