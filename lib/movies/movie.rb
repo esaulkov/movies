@@ -30,8 +30,8 @@ class Movie
 
   def matches?(key, value)
     attribute = Array(public_send(key))
-    Array(value).any? do |filter_val|
-      attribute.any? { |attr_val| filter_val === attr_val }
+    Array(value).product(attribute).any? do |filter_val, attr_val|
+      filter_val === attr_val
     end
   end
 
