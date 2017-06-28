@@ -31,7 +31,9 @@ class Movie
   def matches?(key, value)
     attribute = public_send(key)
     if attribute.is_a?(Array)
-      attribute.any? { |elem| value === elem }
+      attribute.any? do |elem|
+        value === elem || (value.is_a?(Array) && value.member?(elem))
+      end
     else
       value === attribute
     end
@@ -58,9 +60,7 @@ class Movie
   end
 
   def period
-    class_name = self.class.to_s
-    class_name.slice!('Movie')
-    class_name.downcase.to_sym
+    self.class.to_s.scan(/(\w+)Movie/).flatten.first.downcase.to_sym
   end
 
   def rating

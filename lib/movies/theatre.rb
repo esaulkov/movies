@@ -24,13 +24,7 @@ class Theatre < Cinema
     period = TIME_PERIODS.select { |key, value| value === Time.parse(time) }.keys.first
     return 'Извините, ночью сеансов нет.' if period.nil?
 
-    selection = SCHEDULE[period].flat_map do |key, value|
-      if value.is_a?(Array)
-        value.flat_map { |item| @collection.filter(Hash[key, item]) }
-      else
-        @collection.filter(Hash[key, value])
-      end
-    end.uniq
+    selection = @collection.filter(SCHEDULE[period])
 
     display(choice(selection))
   end
@@ -39,14 +33,8 @@ class Theatre < Cinema
     periods = []
     movie = @collection.filter(name: name).first
 
-    periods = SCHEDULE.select do |_, v|
-      key, value = v.entries.first
-      attribute = movie.public_send(key)
-      if attribute.is_a?(Array)
-        value.any? { |v| attribute.include?(v) }
-      else
-        attribute === value
-      end
+    periods = SCHEDULE.select do |_, condition|
+      @collection.filter(condition).include?(movie)
     end.keys
 
     if periods.empty?
