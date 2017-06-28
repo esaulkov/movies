@@ -11,12 +11,11 @@ describe Netflix do
       before(:each) { netflix.pay(100) }
 
       it 'filters movies by params' do
-        is_expected.to match('классический')
-        is_expected.to match('Comedy')
+        is_expected.to match('классический').and match('Comedy')
       end
 
       it 'reduces amount of money' do
-        expect { subject }.to change { netflix.balance }.from(100).to(98.5)
+        expect { subject }.to change(netflix, :balance).from(100).to(98.5)
       end
     end
 
@@ -31,11 +30,13 @@ describe Netflix do
 
   describe '#pay' do
     it 'increases amount of money' do
-      expect { netflix.pay(100) }.to change { netflix.balance }.from(0).to(100)
+      expect { netflix.pay(100) }.to change(netflix, :balance).from(0).to(100)
     end
 
     it 'could not accept negative value' do
-      expect { netflix.pay(-100) }.to_not change { netflix.balance }
+      expect { netflix.pay(-100) }.to raise_error(
+        ArgumentError, 'Нельзя пополнить баланс на отрицательную сумму'
+      )
     end
   end
 
@@ -45,7 +46,9 @@ describe Netflix do
       expect(netflix.how_much?('Seven Samurai')).to eq(1.5)
       expect(netflix.how_much?('Fight Club')).to eq(3)
       expect(netflix.how_much?('Interstellar')).to eq(5)
-      expect(netflix.how_much?('Vinni Pooh')).to eq(0)
+      expect { netflix.how_much?('Vinni Pooh') }.to raise_error(
+        ArgumentError, 'Такой фильм не найден'
+      )
     end
   end
 end

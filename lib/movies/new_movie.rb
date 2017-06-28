@@ -1,13 +1,7 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require_relative 'movie'
-
 class NewMovie < Movie
-  def period
-    :new
-  end
-
   def price
     5
   end

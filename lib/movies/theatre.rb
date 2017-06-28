@@ -5,15 +5,15 @@ require 'time'
 
 class Theatre < Cinema
   SCHEDULE = {
-    morning: {period: :ancient},
-    day: {genres: ['Comedy', 'Adventure']},
-    evening: {genres: ['Drama', 'Horror']}
+    утром: {period: :ancient},
+    днем: {genres: ['Comedy', 'Adventure']},
+    вечером: {genres: ['Drama', 'Horror']}
   }.freeze
 
   TIME_PERIODS = {
-    morning: Time.parse('05:00')..Time.parse('10:59'),
-    day: Time.parse('11:00')..Time.parse('16:59'),
-    evening: Time.parse('17:00')..Time.parse('23:59')
+    утром: Time.parse('05:00')..Time.parse('10:59'),
+    днем: Time.parse('11:00')..Time.parse('16:59'),
+    вечером: Time.parse('17:00')..Time.parse('23:59')
   }.freeze
 
   def initialize(collection)
@@ -32,20 +32,22 @@ class Theatre < Cinema
       end
     end.uniq
 
-    translate(choice(selection))
+    display(choice(selection))
   end
 
   def when?(name)
     periods = []
     movie = @collection.filter(name: name).first
 
-    periods << 'утром' if movie.year < 1946
-    if movie.has_genre?('Comedy') || movie.has_genre?('Adventure')
-      periods << 'днем'
-    end
-    if movie.has_genre?('Drama') || movie.has_genre?('Horror')
-      periods << 'вечером'
-    end
+    periods = SCHEDULE.select do |_, v|
+      key, value = v.entries.first
+      attribute = movie.public_send(key)
+      if attribute.is_a?(Array)
+        value.any? { |v| attribute.include?(v) }
+      else
+        attribute === value
+      end
+    end.keys
 
     if periods.empty?
       'этот фильм в нашем театре не транслируется'

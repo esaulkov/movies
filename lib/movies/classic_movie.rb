@@ -2,10 +2,6 @@
 # frozen_string_literal: true
 
 class ClassicMovie < Movie
-  def period
-    :classic
-  end
-
   def price
     1.5
   end

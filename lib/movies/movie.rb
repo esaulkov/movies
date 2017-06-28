@@ -57,6 +57,12 @@ class Movie
     Date.strptime(release, '%Y-%m').month
   end
 
+  def period
+    class_name = self.class.to_s
+    class_name.slice!('Movie')
+    class_name.downcase.to_sym
+  end
+
   def rating
     @rating.to_f
   end

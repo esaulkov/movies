@@ -13,7 +13,7 @@ describe NewMovie, type: :model do
     subject { movie.to_s }
 
     it 'shows number of years from release' do
-      years_ago = Date.today.year - '2012'.to_i
+      years_ago = Date.today.year - 2012
       is_expected.to include(years_ago.to_s)
     end
 

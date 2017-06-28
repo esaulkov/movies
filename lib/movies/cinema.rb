@@ -12,7 +12,7 @@ class Cinema
     movies.sort_by { |movie| movie.rating * rand }.last
   end
 
-  def translate(movie)
+  def display(movie)
     "Now showing: #{movie}"
   end
 end

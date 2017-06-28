@@ -2,10 +2,6 @@
 # frozen_string_literal: true
 
 class ModernMovie < Movie
-  def period
-    :modern
-  end
-
   def price
     3
   end
