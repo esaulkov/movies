@@ -5,6 +5,8 @@ require 'csv'
 class MovieCollection
   DEFAULT_PATH = 'movies.txt'.freeze
 
+  include Enumerable
+
   attr_reader :movies
 
   def initialize(path = nil)
@@ -19,6 +21,10 @@ class MovieCollection
 
   def all
     movies
+  end
+
+  def each(&block)
+    movies.each(&block)
   end
 
   def filter(params)
