@@ -6,6 +6,8 @@ class Netflix < Cinema
   NEGATIVE_VALUE_MSG = 'Нельзя пополнить баланс на отрицательную сумму'.freeze
   NOT_FOUND_MSG = 'Такой фильм не найден'.freeze
 
+  extend Cashbox
+
   attr_reader :balance
 
   def initialize(collection)
@@ -26,6 +28,7 @@ class Netflix < Cinema
   def pay(sum)
     raise ArgumentError, NEGATIVE_VALUE_MSG if sum < 0
     @balance += sum.to_f
+    Netflix.put_money(sum.to_f)
   end
 
   def how_much?(name)

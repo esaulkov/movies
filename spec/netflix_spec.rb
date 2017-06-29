@@ -38,6 +38,10 @@ describe Netflix do
         ArgumentError, 'Нельзя пополнить баланс на отрицательную сумму'
       )
     end
+
+    it 'increases amount in cashbox' do
+      expect { netflix.pay(75) }.to change(Netflix, :cash).by(75)
+    end
   end
 
   describe '#how_much?' do
