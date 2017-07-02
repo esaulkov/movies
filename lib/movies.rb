@@ -1,6 +1,7 @@
 # coding: utf-8
 # frozen_string_literal: true
 
+require 'money'
 require 'movies/movie'
 require 'movies/movie_collection'
 require 'movies/ancient_movie'
@@ -11,3 +12,5 @@ require 'movies/cashbox'
 require 'movies/cinema'
 require 'movies/netflix'
 require 'movies/theatre'
+
+I18n.enforce_available_locales = false

@@ -15,7 +15,8 @@ describe Netflix do
       end
 
       it 'reduces amount of money' do
-        expect { subject }.to change(netflix, :balance).from(100).to(98.5)
+        expect { subject }.to change(netflix, :balance)
+          .from(Money.new(10000)).to(Money.new(9850))
       end
     end
 
@@ -30,7 +31,7 @@ describe Netflix do
 
   describe '#pay' do
     it 'increases amount of money' do
-      expect { netflix.pay(100) }.to change(netflix, :balance).from(0).to(100)
+      expect { netflix.pay(100) }.to change(netflix, :balance).from(Money.new(0)).to(Money.new(10000))
     end
 
     it 'could not accept negative value' do
@@ -40,16 +41,17 @@ describe Netflix do
     end
 
     it 'increases amount in cashbox' do
-      expect { netflix.pay(75) }.to change(Netflix, :cash).by(75)
+      Netflix.take('Bank')
+      expect { netflix.pay(75) }.to change(Netflix, :cash).from('$0.00').to('$75.00')
     end
   end
 
   describe '#how_much?' do
     it 'returns movie price' do
-      expect(netflix.how_much?('City Lights')).to eq(1)
-      expect(netflix.how_much?('Seven Samurai')).to eq(1.5)
-      expect(netflix.how_much?('Fight Club')).to eq(3)
-      expect(netflix.how_much?('Interstellar')).to eq(5)
+      expect(netflix.how_much?('City Lights')).to eq('$1.00')
+      expect(netflix.how_much?('Seven Samurai')).to eq('$1.50')
+      expect(netflix.how_much?('Fight Club')).to eq('$3.00')
+      expect(netflix.how_much?('Interstellar')).to eq('$5.00')
       expect { netflix.how_much?('Vinni Pooh') }.to raise_error(
         ArgumentError, 'Такой фильм не найден'
       )

@@ -8,7 +8,8 @@ shared_examples 'buy_ticket' do |time, price|
   end
 
   it 'changes amount of money in cashbox' do
-    expect { subject }.to change(theatre, :cash).from(0).to(price)
+    expect { subject }.to change(theatre, :cash)
+      .from('$0.00').to(Money.new(price * 100).format)
   end
 end
 

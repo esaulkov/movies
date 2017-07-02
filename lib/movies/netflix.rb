@@ -12,7 +12,7 @@ class Netflix < Cinema
 
   def initialize(collection)
     super
-    @balance = 0.0
+    @balance = Money.new(0)
   end
 
   def show(params = {})
@@ -27,13 +27,13 @@ class Netflix < Cinema
 
   def pay(sum)
     raise ArgumentError, NEGATIVE_VALUE_MSG if sum < 0
-    @balance += sum.to_f
+    @balance += Money.new(sum * 100.0)
     Netflix.put_money(sum.to_f)
   end
 
   def how_much?(name)
     movie = @collection.filter(name: name).first
     raise ArgumentError, NOT_FOUND_MSG if movie.nil?
-    movie.price
+    movie.price.format
   end
 end

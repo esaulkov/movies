@@ -3,17 +3,17 @@
 
 module Cashbox
   def cash
-    @coins ||= 0
+    (@coins ||= Money.new(0)).format
   end
 
   def put_money(sum)
-    @coins ||= 0
-    @coins += sum
+    @coins ||= Money.new(0)
+    @coins += Money.new(sum * 100)
   end
 
   def take(who)
     raise ArgumentError, 'Оставайтесь на месте, наряд уже выехал!' unless who == 'Bank'
-    @coins = 0
+    @coins = Money.new(0)
     'Проведена инкассация'
   end
 end
