@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 class DummyClass
-  include Cashbox
+  include Movies::Cashbox
 end
 
-describe Cashbox do
+describe Movies::Cashbox do
   let(:dummy) { DummyClass.new }
 
   describe '.cash' do

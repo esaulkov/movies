@@ -1,22 +1,24 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-class ClassicMovie < Movie
-  def price
-    Money.new(150)
-  end
+module Movies
+  class ClassicMovie < Movie
+    def price
+      Money.new(150)
+    end
 
-  def to_s
-    "#{name} - классический фильм (#{@genres}), режиссер #{producer}, снял также #{producer_movies}"
-  end
+    def to_s
+      "#{name} - классический фильм (#{@genres}), режиссер #{producer}, снял также #{producer_movies}"
+    end
 
-  private
+    private
 
-  def producer_movies
-    @collection
-      .filter(producer: producer)
-      .reject { |m| m === self }
-      .map(&:name)
-      .join(', ')
+    def producer_movies
+      @collection
+        .filter(producer: producer)
+        .reject { |m| m === self }
+        .map(&:name)
+        .join(', ')
+    end
   end
 end

@@ -1,9 +1,9 @@
 # coding: utf-8
 
-describe NewMovie, type: :model do
+describe Movies::NewMovie do
   describe '#to_s' do
     let (:movie) do
-      NewMovie.new(
+      Movies::NewMovie.new(
         name: 'The best movie',
         producer: "It's me",
         actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley',

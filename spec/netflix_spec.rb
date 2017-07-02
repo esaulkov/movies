@@ -1,8 +1,8 @@
 # coding: utf-8
 
-describe Netflix do
-  let! (:collection) { MovieCollection.new }
-  let (:netflix) { Netflix.new(collection) }
+describe Movies::Netflix do
+  let! (:collection) { Movies::MovieCollection.new }
+  let (:netflix) { Movies::Netflix.new(collection) }
 
   describe '#show' do
     subject { netflix.show(genre: 'Comedy', period: :classic) }
@@ -41,8 +41,8 @@ describe Netflix do
     end
 
     it 'increases amount in cashbox' do
-      Netflix.take('Bank')
-      expect { netflix.pay(75) }.to change(Netflix, :cash).from('$0.00').to('$75.00')
+      Movies::Netflix.take('Bank')
+      expect { netflix.pay(75) }.to change(Movies::Netflix, :cash).from('$0.00').to('$75.00')
     end
   end
 

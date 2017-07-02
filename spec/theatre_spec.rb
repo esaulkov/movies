@@ -13,9 +13,9 @@ shared_examples 'buy_ticket' do |time, price|
   end
 end
 
-describe Theatre do
-  let! (:collection) { MovieCollection.new }
-  let(:theatre) { Theatre.new(collection) }
+describe Movies::Theatre do
+  let! (:collection) { Movies::MovieCollection.new }
+  let(:theatre) { Movies::Theatre.new(collection) }
 
   describe '#buy_ticket' do
     context 'when it is morning' do

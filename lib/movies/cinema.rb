@@ -1,18 +1,20 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-class Cinema
-  def initialize(collection)
-    @collection = collection
-  end
+module Movies
+  class Cinema
+    def initialize(collection)
+      @collection = collection
+    end
 
-  private
+    private
 
-  def choice(movies)
-    movies.sort_by { |movie| movie.rating * rand }.last
-  end
+    def choice(movies)
+      movies.sort_by { |movie| movie.rating * rand }.last
+    end
 
-  def display(movie)
-    "Now showing: #{movie}"
+    def display(movie)
+      "Now showing: #{movie}"
+    end
   end
 end

@@ -1,9 +1,9 @@
 # coding: utf-8
 
-describe AncientMovie do
+describe Movies::AncientMovie do
   describe '#to_s' do
     let (:movie) do
-      AncientMovie.new(
+      Movies::AncientMovie.new(
         name: 'The best movie',
         producer: "It's me",
         actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley',
