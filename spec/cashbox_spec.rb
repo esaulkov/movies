@@ -1,12 +1,9 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-class DummyClass
-  include Movies::Cashbox
-end
-
 describe Movies::Cashbox do
-  let(:dummy) { DummyClass.new }
+  let(:including_class) { Class.new { include Movies::Cashbox } }
+  let(:dummy) { including_class.new }
 
   describe '.cash' do
     subject { dummy.cash }
