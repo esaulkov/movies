@@ -1,10 +1,10 @@
 # coding: utf-8
 
-describe ClassicMovie do
+describe Movies::ClassicMovie do
   describe '#to_s' do
-    let (:collection) { MovieCollection.new }
+    let (:collection) { Movies::MovieCollection.new }
     let (:movie) do
-      ClassicMovie.new(
+      Movies::ClassicMovie.new(
         name: 'The best movie',
         producer: "It's me",
         actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley',
@@ -13,7 +13,7 @@ describe ClassicMovie do
       )
     end
     let (:second_movie) do
-      ClassicMovie.new(
+      Movies::ClassicMovie.new(
         name: 'The worth movie',
         producer: "It's me",
         actors: 'Andrey Chadov, Marina Alexandrova',

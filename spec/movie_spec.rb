@@ -16,34 +16,34 @@ shared_examples 'create instance of proper class' do |period, class_name|
   end
 end
 
-describe Movie do
+describe Movies::Movie do
   describe '#create' do
-    subject { Movie.create(params) }
+    subject { Movies::Movie.create(params) }
 
     context 'when year is before 1946' do
-      it_behaves_like 'create instance of proper class', 1901..1945, AncientMovie
+      it_behaves_like 'create instance of proper class', 1901..1945, Movies::AncientMovie
     end
 
     context 'when year is in range 1946-1968' do
-      it_behaves_like 'create instance of proper class', 1946..1968, ClassicMovie
+      it_behaves_like 'create instance of proper class', 1946..1968, Movies::ClassicMovie
     end
 
     context 'when year is in range 1969-2000' do
-      it_behaves_like 'create instance of proper class', 1969..2000, ModernMovie
+      it_behaves_like 'create instance of proper class', 1969..2000, Movies::ModernMovie
     end
 
     context 'when year is after 2000' do
-      it_behaves_like 'create instance of proper class', 2001..Date.today.year, NewMovie
+      it_behaves_like 'create instance of proper class', 2001..Date.today.year, Movies::NewMovie
     end
 
     context 'when year is undefined' do
-      it_behaves_like 'create instance of proper class', nil, Movie
+      it_behaves_like 'create instance of proper class', nil, Movies::Movie
     end
   end
 
   describe '#matches?' do
     let(:movie) do
-      Movie.create(
+      Movies::Movie.create(
         name: 'Pulp Fiction',
         producer: 'Quentin Tarantino',
         year: '1994',
@@ -79,7 +79,7 @@ describe Movie do
 
   describe '#to_s' do
     let (:movie) do
-      Movie.new(
+      Movies::Movie.new(
           name: 'The best movie',
           producer: "It's me",
           actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley'

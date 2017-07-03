@@ -4,7 +4,7 @@
 $LOAD_PATH.unshift(File.expand_path('../lib', 'lib'))
 require 'movies'
 
-movies = MovieCollection.new(ARGV[0])
+movies = Movies::MovieCollection.new(ARGV[0])
 
 begin
   puts "\nList of actors in the first movie:"
@@ -26,25 +26,30 @@ begin
   puts movies.stats(:month)
 
   puts "\nLet's go to cinema..."
-  cinema = Theatre.new(movies)
+  cinema = Movies::Theatre.new(movies)
   puts "\nNow is 10:40. What is the movie?"
   puts cinema.show('10:40')
   puts "\nAnd now is 14:47. What is the movie?"
   puts cinema.show('14:47')
   puts "\nI want to watch Metropolis. When I could to do it?"
   puts cinema.when?('Metropolis')
+  puts "\nPlease give me one ticket to the next show"
+  puts cinema.buy_ticket('20:00')
 
   puts "\nOur online cinema Netflix presents:"
-  cinema = Netflix.new(movies)
+  cinema = Movies::Netflix.new(movies)
   cinema.pay(10)
   puts cinema.show(genre: 'Comedy', period: :modern)
   puts "\nThe next movie is:"
   puts cinema.show(genre: 'Adventure', period: :new)
-  puts "\nAnd one more movie..."
-  puts cinema.show(name: 'Batman Begins')
-  puts "\nHow expensive is this movie?"
+  puts "\nHow expensive is this movie (Batman Begins)?"
   puts cinema.how_much?('Batman Begins')
-  puts "\nLet's pay for it"
+  puts "\nWell, how much is in cashbox?"
+  puts Movies::Netflix.cash
+  puts "\nI'm from National Bank. Give me please these money."
+  puts Movies::Netflix.take('Bank')
+  puts "\nI'm not from the bank. But I want these money too!"
+  puts Movies::Netflix.take('Jonny')
 
 rescue ArgumentError => e
   puts '**********************************'
