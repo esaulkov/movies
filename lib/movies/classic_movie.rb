@@ -8,7 +8,8 @@ module Movies
     end
 
     def to_s
-      "#{name} - классический фильм (#{@genres}), режиссер #{producer}, снял также #{producer_movies}"
+      "#{name} - классический фильм (#{@genres}),"\
+      " режиссер #{producer}, снял также #{producer_movies}"
     end
 
     private
@@ -16,7 +17,7 @@ module Movies
     def producer_movies
       @collection
         .filter(producer: producer)
-        .reject { |m| m === self }
+        .reject { |m| m == self }
         .map(&:name)
         .join(', ')
     end

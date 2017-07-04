@@ -1,10 +1,11 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 require 'csv'
 
 module Movies
   class MovieCollection
-    DEFAULT_PATH = 'movies.txt'.freeze
+    DEFAULT_PATH = 'movies.txt'
 
     include Enumerable
 
@@ -14,7 +15,8 @@ module Movies
       movies_file = path || DEFAULT_PATH
       abort("This file doesn't exist") unless File.file?(movies_file)
 
-      @movies = CSV.read(movies_file, col_sep: '|', headers: Movie::PARAMS).map do |row|
+      options = {col_sep: '|', headers: Movie::PARAMS}
+      @movies = CSV.read(movies_file, options).map do |row|
         params = row.to_h.merge(collection: self)
         Movie.create(params)
       end
@@ -44,8 +46,8 @@ module Movies
 
     def stats(field)
       statistic = movies.map(&field.to_sym).flatten.compact
-      counts = statistic.each_with_object(Hash.new(0)) do |key, counts|
-        counts[key] += 1
+      counts = statistic.each_with_object(Hash.new(0)) do |key, counter|
+        counter[key] += 1
       end
 
       counts.sort.to_h

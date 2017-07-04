@@ -3,9 +3,9 @@
 
 module Movies
   class Netflix < Cinema
-    MONEY_MSG = 'Не хватает денег для просмотра, пополните, пожалуйста, баланс.'.freeze
-    NEGATIVE_VALUE_MSG = 'Нельзя пополнить баланс на отрицательную сумму'.freeze
-    NOT_FOUND_MSG = 'Такой фильм не найден'.freeze
+    MONEY_MSG = 'Не хватает денег для просмотра, пополните, пожалуйста, баланс.'
+    NEGATIVE_VALUE_MSG = 'Нельзя пополнить баланс на отрицательную сумму'
+    NOT_FOUND_MSG = 'Такой фильм не найден'
 
     extend Cashbox
 
@@ -27,7 +27,7 @@ module Movies
     end
 
     def pay(sum)
-      raise ArgumentError, NEGATIVE_VALUE_MSG if sum < 0
+      raise ArgumentError, NEGATIVE_VALUE_MSG if sum.negative?
       @balance += Money.new(sum * 100.0)
       Netflix.put_money(sum.to_f)
     end

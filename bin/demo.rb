@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # coding: utf-8
+# frozen_string_literal: true
 
 $LOAD_PATH.unshift(File.expand_path('../lib', 'lib'))
 require 'movies'
@@ -50,7 +51,6 @@ begin
   puts Movies::Netflix.take('Bank')
   puts "\nI'm not from the bank. But I want these money too!"
   puts Movies::Netflix.take('Jonny')
-
 rescue ArgumentError => e
   puts '**********************************'
   puts e.message

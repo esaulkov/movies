@@ -79,7 +79,7 @@ module Movies
       when 1946..1968 then ClassicMovie.new(params)
       when 1969..2000 then ModernMovie.new(params)
       when 2000..Date.today.year then NewMovie.new(params)
-      else self.new(params)
+      else new(params)
       end
     end
   end
