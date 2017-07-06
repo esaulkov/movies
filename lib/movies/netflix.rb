@@ -60,7 +60,7 @@ module Movies
 
   class Something
     def self.===(item)
-      !(NilClass === item || FalseClass === item)
+      [FalseClass, NilClass].none? { |wrong_class| item.is_a?(wrong_class) }
     end
   end
 end
