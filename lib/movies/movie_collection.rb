@@ -32,7 +32,11 @@ module Movies
 
     def filter(params)
       movies.select do |movie|
-        params.all? { |key, value| movie.matches?(key, value) }
+        if block_given?
+          yield(movie)
+        else
+          params.all? { |key, value| movie.matches?(key, value) }
+        end
       end
     end
 

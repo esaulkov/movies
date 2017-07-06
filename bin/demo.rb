@@ -39,10 +39,28 @@ begin
 
   puts "\nOur online cinema Netflix presents:"
   cinema = Movies::Netflix.new(movies)
-  cinema.pay(10)
+  cinema.pay(30)
   puts cinema.show(genre: 'Comedy', period: :modern)
   puts "\nThe next movie is:"
   puts cinema.show(genre: 'Adventure', period: :new)
+  puts "\nSome new action except Terminator? Of course!"
+  puts cinema.show { |movie| !movie.name.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003 }
+  puts "\nI like to watch new Sci-Fi movies. Save filter..."
+  cinema.define_filter(:new_sci_fi) do |movie|
+    movie.period == :new && movie.genre.include?('Sci-Fi')
+  end
+  puts "\nAnd apply it!"
+  puts cinema.show(new_sci_fi: true)
+  puts "\nLet's create a filter with params (Sci-Fi genre, before some year)..."
+  cinema.define_filter(:ancient_sci_fi) do |movie, year|
+    movie.year < year && movie.genre.include?('Sci-Fi')
+  end
+  puts "\nTry to apply (before 1941)..."
+  puts cinema.show(ancient_sci_fi: 1941)
+  puts "\nLet's create a child filter (year < 1980)"
+  cinema.define_filter(:classic_sci_fi, from: :ancient_sci_fi, arg: 1980)
+  puts "\nTry to apply it:"
+  puts cinema.show(classic_sci_fi: true)
   puts "\nHow expensive is this movie (Batman Begins)?"
   puts cinema.how_much?('Batman Begins')
   puts "\nWell, how much is in cashbox?"

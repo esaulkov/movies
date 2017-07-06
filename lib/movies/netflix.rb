@@ -9,15 +9,23 @@ module Movies
 
     extend Cashbox
 
-    attr_reader :balance
+    attr_reader :balance, :filters
 
     def initialize(collection)
       super
       @balance = Money.new(0)
+      @filters = {}
     end
 
-    def show(params = {})
-      selection = @collection.filter(params)
+    def define_filter(name, from: '', arg: '', &block)
+      return @filters[name] = block if from.empty?
+
+      @filters[name] = ->(movie) { @filters[from].call(movie, arg) }
+    end
+
+    def show(params = {}, &block)
+      block_filter = block_given? ? block : find_filter(params)
+      selection = @collection.filter(params, &block_filter)
       movie = choice(selection)
 
       raise ArgumentError, MONEY_MSG if @balance < movie.price
@@ -36,6 +44,18 @@ module Movies
       movie = @collection.filter(name: name).first
       raise ArgumentError, NOT_FOUND_MSG if movie.nil?
       movie.price.format
+    end
+
+    private
+
+    def find_filter(params)
+      @filters.map do |key, value|
+        case params[key]
+        when TrueClass then value
+        when Numeric then ->(movie) { value.call(movie, params[key]) }
+        when String then ->(movie) { value.call(movie, params[key]) }
+        end
+      end.compact.first
     end
   end
 end

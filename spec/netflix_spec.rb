@@ -4,6 +4,16 @@ describe Movies::Netflix do
   let! (:collection) { Movies::MovieCollection.new }
   let (:netflix) { Movies::Netflix.new(collection) }
 
+  describe '#define_filter' do
+    it 'saves the filter in instance attribute' do
+      netflix.define_filter(:my_wish) do |movie|
+        movie.year > 2000 && movie.producer == 'Christopher Nolan'
+      end
+
+      expect(netflix.filters).to include(my_wish: an_instance_of(Proc))
+    end
+  end
+
   describe '#show' do
     subject { netflix.show(genre: 'Comedy', period: :classic) }
 
@@ -12,6 +22,11 @@ describe Movies::Netflix do
 
       it 'filters movies by params' do
         is_expected.to match('классический').and match('Comedy')
+      end
+
+      it 'can accept block as params' do
+        res = netflix.show { |movie| movie.actors.include?('Chris Pratt') && movie.genre.include?('Adventure') }
+        expect(res).to match('Guardians of the Galaxy')
       end
 
       it 'reduces amount of money' do
