@@ -17,8 +17,8 @@ module Movies
       @filters = {}
     end
 
-    def define_filter(name, from: '', arg: '', &block)
-      return @filters[name] = block if from.empty?
+    def define_filter(name, from: nil, arg: nil, &block)
+      return @filters[name] = block if from.nil?
 
       @filters[name] = ->(movie) { @filters[from].call(movie, arg) }
     end
@@ -52,10 +52,15 @@ module Movies
       @filters.map do |key, value|
         case params[key]
         when TrueClass then value
-        when Numeric then ->(movie) { value.call(movie, params[key]) }
-        when String then ->(movie) { value.call(movie, params[key]) }
+        when Something then ->(movie) { value.call(movie, params[key]) }
         end
       end.compact.first
+    end
+  end
+
+  class Something
+    def self.===(item)
+      !(NilClass === item || FalseClass === item)
     end
   end
 end

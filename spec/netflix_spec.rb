@@ -29,6 +29,23 @@ describe Movies::Netflix do
         expect(res).to match('Guardians of the Galaxy')
       end
 
+      it 'can work with saved filters' do
+        netflix.define_filter(:my_wish) do |movie, year|
+          movie.year > year && movie.genre.include?('History')
+        end
+
+        expect(netflix.show(my_wish: 2000)).to match('новинка').and match('History')
+      end
+
+      it 'can use child filters' do
+        netflix.define_filter(:my_wish) do |movie, period|
+          movie.period == period && movie.genre.include?('History')
+        end
+        netflix.define_filter(:child, from: :my_wish, arg: :classic)
+
+        expect(netflix.show(child: true)).to match('классический фильм').and match('History')
+      end
+
       it 'reduces amount of money' do
         expect { subject }.to change(netflix, :balance)
           .from(Money.new(10000)).to(Money.new(9850))

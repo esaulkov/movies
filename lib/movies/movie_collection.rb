@@ -15,8 +15,7 @@ module Movies
       movies_file = path || DEFAULT_PATH
       abort("This file doesn't exist") unless File.file?(movies_file)
 
-      options = {col_sep: '|', headers: Movie::PARAMS}
-      @movies = CSV.read(movies_file, options).map do |row|
+      @movies = CSV.read(movies_file, col_sep: '|', headers: Movie::PARAMS).map do |row|
         params = row.to_h.merge(collection: self)
         Movie.create(params)
       end
