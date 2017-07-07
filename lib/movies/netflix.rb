@@ -24,8 +24,8 @@ module Movies
     end
 
     def show(params = {}, &block)
-      block_filter = block_given? ? block : find_filter(params)
-      selection = @collection.filter(params, &block_filter)
+      block_filter = block_given? ? [block] : find_filter(params)
+      selection = @collection.filter(params, block_filter)
       movie = choice(selection)
 
       raise ArgumentError, MONEY_MSG if @balance < movie.price
@@ -51,16 +51,11 @@ module Movies
     def find_filter(params)
       @filters.map do |key, value|
         case params[key]
-        when TrueClass then value
-        when Something then ->(movie) { value.call(movie, params[key]) }
+        when true then value
+        when nil, false then nil
+        else ->(movie) { value.call(movie, params[key]) }
         end
-      end.compact.first
-    end
-  end
-
-  class Something
-    def self.===(item)
-      [FalseClass, NilClass].none? { |wrong_class| item.is_a?(wrong_class) }
+      end.compact
     end
   end
 end

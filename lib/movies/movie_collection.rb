@@ -29,12 +29,12 @@ module Movies
       movies.each(&block)
     end
 
-    def filter(params)
+    def filter(params, blocks = [])
       movies.select do |movie|
-        if block_given?
-          yield(movie)
-        else
+        if blocks.empty?
           params.all? { |key, value| movie.matches?(key, value) }
+        else
+          blocks.all? { |block| block.call(movie) }
         end
       end
     end

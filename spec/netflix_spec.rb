@@ -5,11 +5,13 @@ describe Movies::Netflix do
   let (:netflix) { Movies::Netflix.new(collection) }
 
   describe '#define_filter' do
-    it 'saves the filter in instance attribute' do
+    before do
       netflix.define_filter(:my_wish) do |movie|
         movie.year > 2000 && movie.producer == 'Christopher Nolan'
       end
+    end
 
+    it 'saves the filter in instance attribute' do
       expect(netflix.filters).to include(my_wish: an_instance_of(Proc))
     end
   end
@@ -24,31 +26,48 @@ describe Movies::Netflix do
         is_expected.to match('классический').and match('Comedy')
       end
 
-      it 'can accept block as params' do
-        res = netflix.show { |movie| movie.actors.include?('Chris Pratt') && movie.genre.include?('Adventure') }
-        expect(res).to match('Guardians of the Galaxy')
-      end
-
-      it 'can work with saved filters' do
-        netflix.define_filter(:my_wish) do |movie, year|
-          movie.year > year && movie.genre.include?('History')
-        end
-
-        expect(netflix.show(my_wish: 2000)).to match('новинка').and match('History')
-      end
-
-      it 'can use child filters' do
-        netflix.define_filter(:my_wish) do |movie, period|
-          movie.period == period && movie.genre.include?('History')
-        end
-        netflix.define_filter(:child, from: :my_wish, arg: :classic)
-
-        expect(netflix.show(child: true)).to match('классический фильм').and match('History')
-      end
-
       it 'reduces amount of money' do
         expect { subject }.to change(netflix, :balance)
           .from(Money.new(10000)).to(Money.new(9850))
+      end
+
+      context 'when params is a block' do
+        subject do
+          netflix.show do |movie|
+            movie.actors.include?('Chris Pratt') && movie.genre.include?('Adventure')
+          end
+        end
+
+        it 'filters movies by condition' do
+          is_expected.to match('Guardians of the Galaxy')
+        end
+      end
+
+      context 'when params is a saved filter' do
+        before(:each) do
+          netflix.define_filter(:my_wish) do |movie, period|
+            movie.period == period && movie.genre.include?('History')
+          end
+        end
+
+        it 'can work with saved filters' do
+          expect(netflix.show(my_wish: :new)).to match('новинка').and match('History')
+        end
+
+        it 'can use child filters' do
+          netflix.define_filter(:child, from: :my_wish, arg: :classic)
+
+          expect(netflix.show(child: true)).to match('классический фильм').and match('History')
+        end
+
+        it 'can work with many filters' do
+          netflix.define_filter(:my_other_wish) do |movie|
+            movie.genre.include?('Biography')
+          end
+
+          expect(netflix.show(my_wish: :modern, my_other_wish: true))
+            .to match('современное кино').and match('History').and match('Biography')
+        end
       end
     end
 
