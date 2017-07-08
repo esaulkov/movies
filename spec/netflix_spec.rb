@@ -1,5 +1,7 @@
 # coding: utf-8
 
+RSpec::Matchers.define_negated_matcher :not_match, :match
+
 describe Movies::Netflix do
   let! (:collection) { Movies::MovieCollection.new }
   let (:netflix) { Movies::Netflix.new(collection) }
@@ -60,6 +62,12 @@ describe Movies::Netflix do
           expect(netflix.show(child: true)).to match('классический фильм').and match('History')
         end
 
+        it 'can negate the filter' do
+          netflix.define_filter(:child, from: :my_wish, arg: :classic)
+
+          expect(netflix.show(child: false)).to not_match('классический фильм').or not_match('History')
+        end
+
         it 'can work with many filters' do
           netflix.define_filter(:my_other_wish) do |movie|
             movie.genre.include?('Biography')
@@ -67,6 +75,11 @@ describe Movies::Netflix do
 
           expect(netflix.show(my_wish: :modern, my_other_wish: true))
             .to match('современное кино').and match('History').and match('Biography')
+        end
+
+        it 'can work with both types of filters' do
+          expect(netflix.show(my_wish: :modern, actors: 'Mel Gibson'))
+            .to match('современное кино').and match('Mel Gibson')
         end
       end
     end

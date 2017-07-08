@@ -51,6 +51,8 @@ begin
   end
   puts "\nAnd apply it!"
   puts cinema.show(new_sci_fi: true)
+  puts "\nAnd something else (new_sci_fi: false)"
+  puts cinema.show(new_sci_fi: false)
   puts "\nLet's create a filter with params (Sci-Fi genre, before some year)..."
   cinema.define_filter(:ancient_sci_fi) do |movie, year|
     movie.year < year && movie.genre.include?('Sci-Fi')

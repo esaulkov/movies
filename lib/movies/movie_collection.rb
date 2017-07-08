@@ -29,12 +29,15 @@ module Movies
       movies.each(&block)
     end
 
-    def filter(params, blocks = [])
+    def filter(params)
       movies.select do |movie|
-        if blocks.empty?
-          params.all? { |key, value| movie.matches?(key, value) }
-        else
-          blocks.all? { |block| block.call(movie) }
+        params.all? do |arg|
+          if arg.is_a?(Proc)
+            arg.call(movie)
+          else
+            key, value = arg.is_a?(Hash) ? arg.flatten : arg
+            movie.matches?(key, value)
+          end
         end
       end
     end

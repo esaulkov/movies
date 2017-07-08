@@ -24,8 +24,9 @@ module Movies
     end
 
     def show(params = {}, &block)
-      block_filter = block_given? ? [block] : find_filter(params)
-      selection = @collection.filter(params, block_filter)
+      args = find_filter(params)
+      args << block if block_given?
+      selection = @collection.filter(args)
       movie = choice(selection)
 
       raise ArgumentError, MONEY_MSG if @balance < movie.price
@@ -48,14 +49,18 @@ module Movies
 
     private
 
+    def block_filter(key, value)
+      case value
+      when true then @filters[key]
+      when false then ->(movie) { !@filters[key].call(movie) }
+      else ->(movie) { @filters[key].call(movie, value) }
+      end
+    end
+
     def find_filter(params)
-      @filters.map do |key, value|
-        case params[key]
-        when true then value
-        when nil, false then nil
-        else ->(movie) { value.call(movie, params[key]) }
-        end
-      end.compact
+      params.map do |key, value|
+        @filters.key?(key) ? block_filter(key, value) : Hash[key, value]
+      end
     end
   end
 end
