@@ -24,7 +24,7 @@ module Movies
     end
 
     def show(params = {}, &block)
-      args = convert_filters(params)
+      args = process_filters(params)
       args << block if block_given?
       selection = @collection.filter(args)
       movie = choice(selection)
@@ -57,7 +57,7 @@ module Movies
       end
     end
 
-    def convert_filters(params)
+    def process_filters(params)
       params.map do |key, value|
         @filters.key?(key) ? convert_filter(key, value) : {key => value}
       end
