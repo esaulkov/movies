@@ -24,7 +24,7 @@ module Movies
     end
 
     def show(params = {}, &block)
-      args = find_filter(params)
+      args = convert_filters(params)
       args << block if block_given?
       selection = @collection.filter(args)
       movie = choice(selection)
@@ -49,7 +49,7 @@ module Movies
 
     private
 
-    def block_filter(key, value)
+    def convert_filter(key, value)
       case value
       when true then @filters[key]
       when false then ->(movie) { !@filters[key].call(movie) }
@@ -57,9 +57,9 @@ module Movies
       end
     end
 
-    def find_filter(params)
+    def convert_filters(params)
       params.map do |key, value|
-        @filters.key?(key) ? block_filter(key, value) : Hash[key, value]
+        @filters.key?(key) ? convert_filter(key, value) : {key => value}
       end
     end
   end
