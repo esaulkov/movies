@@ -7,8 +7,8 @@ module Movies
   class Theatre < Cinema
     SCHEDULE = {
       утром: {period: :ancient},
-      днем: {genres: ['Comedy', 'Adventure']},
-      вечером: {genres: ['Drama', 'Horror']}
+      днем: {genres: %w[Comedy Adventure]},
+      вечером: {genres: %w[Drama Horror]}
     }.freeze
 
     TIME_PERIODS = {
@@ -23,6 +23,8 @@ module Movies
       вечером: 10
     }.freeze
 
+    CINEMA_CLOSED_MSG = 'Кинотеатр закрыт, касса не работает'
+
     include Cashbox
 
     def initialize(collection)
@@ -31,9 +33,7 @@ module Movies
 
     def buy_ticket(time)
       period = find_period(time)
-      if period.nil?
-        raise ArgumentError, 'Кинотеатр закрыт, касса не работает'
-      end
+      raise ArgumentError, CINEMA_CLOSED_MSG if period.nil?
 
       movie = choice(@collection.filter(SCHEDULE[period]))
       put_money(PRICES[period])
@@ -50,7 +50,6 @@ module Movies
     end
 
     def when?(name)
-      periods = []
       movie = @collection.filter(name: name).first
 
       periods = SCHEDULE.select do |_, condition|
@@ -67,7 +66,9 @@ module Movies
     private
 
     def find_period(time)
-      TIME_PERIODS.select { |key, value| value === Time.parse(time) }.keys.first
+      TIME_PERIODS.select do |_key, value|
+        value.include?(Time.parse(time))
+      end.keys.first
     end
   end
 end

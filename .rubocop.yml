@@ -1,0 +1,12 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - 'spec/**/*'
+    - '**/Rakefile'
+  DisplayStyleGuide: true
+Documentation:
+  Enabled: false
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+Metrics/LineLength:
+  Max: 100

@@ -1,10 +1,11 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 require 'csv'
 
 module Movies
   class MovieCollection
-    DEFAULT_PATH = 'movies.txt'.freeze
+    DEFAULT_PATH = 'movies.txt'
 
     include Enumerable
 
@@ -30,7 +31,14 @@ module Movies
 
     def filter(params)
       movies.select do |movie|
-        params.all? { |key, value| movie.matches?(key, value) }
+        params.all? do |arg|
+          if arg.is_a?(Proc)
+            arg.call(movie)
+          else
+            key, value = arg.is_a?(Hash) ? arg.flatten : arg
+            movie.matches?(key, value)
+          end
+        end
       end
     end
 
@@ -44,8 +52,8 @@ module Movies
 
     def stats(field)
       statistic = movies.map(&field.to_sym).flatten.compact
-      counts = statistic.each_with_object(Hash.new(0)) do |key, counts|
-        counts[key] += 1
+      counts = statistic.each_with_object(Hash.new(0)) do |key, counter|
+        counter[key] += 1
       end
 
       counts.sort.to_h
