@@ -17,6 +17,10 @@ module Movies
       @filters = {}
     end
 
+    def by_genre
+      GenreSelection.new(@collection)
+    end
+
     def define_filter(name, from: nil, arg: nil, &block)
       return @filters[name] = block if from.nil?
 
