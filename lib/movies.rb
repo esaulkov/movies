@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'money'
+require 'virtus'
 require 'movies/movie'
 require 'movies/movie_collection'
 require 'movies/ancient_movie'

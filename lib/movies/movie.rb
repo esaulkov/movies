@@ -9,12 +9,23 @@ module Movies
       link name year country release genres length
       rating producer actors collection
     ].freeze
-    attr_reader :link, :name, :country, :release, :producer, :collection
+
+    include Virtus.model
+
+    attribute :link, String
+    attribute :name, String
+    attribute :year, Integer
+    attribute :country, String
+    attribute :release, String
+    attribute :genres, String
+    attribute :length, Integer
+    attribute :rating, Float
+    attribute :producer, String
+    attribute :actors, String
+    attribute :collection, Object
 
     def initialize(hsh = {})
-      hsh
-        .keep_if { |key, _| PARAMS.include?(key) }
-        .each { |key, value| instance_variable_set("@#{key}", value) }
+      self.attributes = hsh.keep_if { |key, _| PARAMS.include?(key) }
     end
 
     def actors
@@ -27,6 +38,10 @@ module Movies
 
     def genres
       @genres.split(',')
+    end
+
+    def length
+      @length.to_i
     end
 
     def matches?(key, value)
@@ -47,10 +62,6 @@ module Movies
       "#<Movie #{self}>"
     end
 
-    def length
-      @length.to_i
-    end
-
     def month
       return if release.size < 5
       Date.strptime(release, '%Y-%m').month
@@ -60,17 +71,9 @@ module Movies
       self.class.to_s.scan(/(\w+)Movie/).flatten.first.downcase.to_sym
     end
 
-    def rating
-      @rating.to_f
-    end
-
     def to_s
       "#{name} (#{release}; #{country}; #{@genres.to_s.tr(',', '/')})
        - #{length} min"
-    end
-
-    def year
-      @year.to_i
     end
 
     def self.create(params)
