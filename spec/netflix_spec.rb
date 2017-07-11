@@ -6,6 +6,12 @@ describe Movies::Netflix do
   let! (:collection) { Movies::MovieCollection.new }
   let (:netflix) { Movies::Netflix.new(collection) }
 
+  describe '#by_country' do
+    subject { netflix.by_country }
+
+    it { is_expected.to be_an_instance_of(Movies::CountrySelection) }
+  end
+
   describe '#by_genre' do
     subject { netflix.by_genre }
 
