@@ -5,7 +5,7 @@ module Movies
   class CountrySelection
     def initialize(collection)
       @collection = collection
-      @countries = @collection.stats(:country).keys
+      @countries = @collection.stats(:country).keys.map { |country| country.downcase.tr(' ', '_') }
     end
 
     def method_missing(name)
@@ -27,7 +27,7 @@ module Movies
     end
 
     def valid_name?(name)
-      @countries.any? { |country| regex(name) =~ country }
+      @countries.include?(name.to_s)
     end
   end
 end

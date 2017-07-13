@@ -4,10 +4,16 @@
 require 'date'
 
 module Movies
+  class ArrayOfStrings < Virtus::Attribute
+    def coerce(value)
+      value.nil? ? [] : value.split(',')
+    end
+  end
+
   class Movie
     PARAMS = %i[
       link name year country release genres length
-      rating producer actors collection
+      rating producer actors
     ].freeze
 
     include Virtus.model
@@ -17,31 +23,19 @@ module Movies
     attribute :year, Integer
     attribute :country, String
     attribute :release, String
-    attribute :genres, String
+    attribute :genres, ArrayOfStrings
     attribute :length, Integer
     attribute :rating, Float
     attribute :producer, String
-    attribute :actors, String
+    attribute :actors, ArrayOfStrings
     attribute :collection, Object
-
-    def initialize(hsh = {})
-      self.attributes = hsh.keep_if { |key, _| PARAMS.include?(key) }
-    end
-
-    def actors
-      @actors.split(',')
-    end
 
     def genre
       genres
     end
 
-    def genres
-      @genres.split(',')
-    end
-
-    def length
-      @length.to_i
+    def length=(length_str)
+      super length_str.to_i
     end
 
     def matches?(key, value)
@@ -76,7 +70,7 @@ module Movies
     end
 
     def to_s
-      "#{name} (#{release}; #{country}; #{@genres.to_s.tr(',', '/')})
+      "#{name} (#{release}; #{country}; #{genres.join('/')})
        - #{length} min"
     end
 

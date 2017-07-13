@@ -8,7 +8,7 @@ module Movies
     end
 
     def to_s
-      "#{name} - современное кино (#{@genres}), играют #{@actors}"
+      "#{name} - современное кино (#{genres.join(', ')}), играют #{actors.join(', ')}"
     end
   end
 end

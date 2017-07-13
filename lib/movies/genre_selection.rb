@@ -7,7 +7,7 @@ module Movies
       @collection = collection
 
       @collection.genres.each do |genre|
-        define_singleton_method genre.downcase.tr('-', '_').to_s do
+        define_singleton_method genre.downcase.tr('-', '_') do
           @collection.filter(genre: genre)
         end
       end
