@@ -24,51 +24,92 @@ module Movies
     }.freeze
 
     CINEMA_CLOSED_MSG = 'Кинотеатр закрыт, касса не работает'
+    SCHEDULE_INVALID_MSG = 'Расписание некорректно (сеансы не должны пересекаться в одном зале)'
 
     include Cashbox
 
-    def initialize(collection)
+    attr_reader :halls, :periods
+
+    def initialize(collection, &block)
       super
+      @halls = []
+      @periods = []
+      instance_eval(&block) if block_given?
+      raise ArgumentError, SCHEDULE_INVALID_MSG unless schedule_valid?
     end
 
     def buy_ticket(time)
       period = find_period(time)
       raise ArgumentError, CINEMA_CLOSED_MSG if period.nil?
 
-      movie = choice(@collection.filter(SCHEDULE[period]))
-      put_money(PRICES[period])
-      "Вы купили билет на #{movie.name}"
+      movie = find_movie(period)
+      hall = period.halls.sort_by { |h| h.places * rand }.last
+      put_money(period.cost)
+      "Вы купили билет на #{movie.name} в #{hall.title}"
     end
 
     def show(time)
       period = find_period(time)
-      return 'Извините, ночью сеансов нет.' if period.nil?
+      return CINEMA_CLOSED_MSG if period.nil?
 
-      selection = @collection.filter(SCHEDULE[period])
-
-      display(choice(selection))
+      movie = find_movie(period)
+      display(movie)
     end
 
     def when?(name)
       movie = @collection.filter(name: name).first
 
-      periods = SCHEDULE.select do |_, condition|
-        @collection.filter(condition).include?(movie)
-      end.keys
+      periods = @periods.select do |period|
+        selection(period).include?(movie)
+      end
 
       if periods.empty?
         'этот фильм в нашем театре не транслируется'
       else
-        periods.join(' или ')
+        periods.map(&:to_s).join(' или ')
       end
     end
 
     private
 
+    def cross?(first, second)
+      begin1 = first.period.begin
+      end1 = first.period.end
+      begin2 = second.period.begin
+      end2 = second.period.end
+      same_hall?(first, second) && end1 > begin2 && begin1 < end2
+    end
+
+    def find_movie(period)
+      choice(selection(period))
+    end
+
     def find_period(time)
-      TIME_PERIODS.select do |_key, value|
-        value.include?(Time.parse(time))
-      end.keys.first
+      @periods
+        .select { |show| show.period.include?(Time.parse(time)) }
+        .sort_by { |show| show.tickets * rand }
+        .last
+    end
+
+    def hall(hall_name, params)
+      @halls << Hall.new(hall_name, params)
+    end
+
+    def period(interval, &block)
+      @periods << Show.new(interval, self, &block)
+    end
+
+    def same_hall?(first, second)
+      (first.halls - second.halls).size < first.halls.size
+    end
+
+    def schedule_valid?
+      return true if @periods.empty?
+      @periods.combination(2).none? { |a, b| cross?(a, b) }
+    end
+
+    def selection(period)
+      @collection.filter(period.name.nil? ? period.filter : {name: period.name})
     end
   end
 end

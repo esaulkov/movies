@@ -45,10 +45,14 @@ module Movies
     end
 
     def matches?(key, value)
-      attribute = Array(public_send(key))
-      Array(value).product(attribute).any? do |filter_val, attr_val|
+      exclusion = key.to_s.split('_').first == 'exclude'
+      attribute = Array(public_send(key.to_s.split('_').last))
+
+      res = Array(value).product(attribute).any? do |filter_val, attr_val|
         filter_val === attr_val
       end
+
+      exclusion ^ res
     end
 
     def has_genre?(string)

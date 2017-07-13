@@ -15,19 +15,90 @@ end
 
 describe Movies::Theatre do
   let! (:collection) { Movies::MovieCollection.new }
-  let(:theatre) { Movies::Theatre.new(collection) }
+  let(:theatre) do
+    Movies::Theatre.new(collection) do
+      hall :red, title: 'Красный зал', places: 100
+      hall :blue, title: 'Синий зал', places: 50
+      period '09:00'..'11:00' do
+        description 'Утренний сеанс'
+        filters genre: 'Comedy', year: 1900..1980
+        price 10
+        hall :red
+      end
+
+      period '11:00'..'16:00' do
+        description 'Спецпоказ'
+        title 'The Terminator'
+        price 50
+        hall :red
+      end
+
+      period '10:00'..'15:00' do
+        description 'Дневной сеанс'
+        filters genre: ['Action', 'Drama'], year: 2007..Time.now.year
+        price 20
+        hall :blue
+      end
+
+      period '16:00'..'20:00' do
+        description 'Вечерний сеанс'
+        filters year: 1900..1945, exclude_country: 'USA'
+        price 30
+        hall :red, :blue
+      end
+    end
+  end
+
+  describe '#new' do
+    subject { Movies::Theatre.new(collection) { return 'It is a block!' } }
+
+    it 'can accept a block' do
+      is_expected.to eq('It is a block!')
+    end
+
+    context 'when schedule is invalid' do
+      subject do
+        Movies::Theatre.new(collection) do
+          hall :red, title: 'Красный зал', places: 100
+          period '09:00'..'11:00' do
+            description 'Утренний сеанс'
+            title 'The Terminator'
+            price 50
+            hall :red
+          end
+
+          period '10:00'..'16:00' do
+            description 'Спецпоказ'
+            title 'The Terminator'
+            price 50
+            hall :red
+          end
+        end
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(ArgumentError, /Расписание некорректно/)
+      end
+    end
+
+    context 'when schedule is valid' do
+      it "doesn't raise an error" do
+        expect { subject }.to_not raise_error
+      end
+    end
+  end
 
   describe '#buy_ticket' do
     context 'when it is morning' do
-      it_behaves_like 'buy_ticket', '09:20', 3
+      it_behaves_like 'buy_ticket', '09:20', 10
     end
 
     context 'when it is day' do
-      it_behaves_like 'buy_ticket', '15:45', 5
+      it_behaves_like 'buy_ticket', '15:45', 50
     end
 
     context 'when it is evening' do
-      it_behaves_like 'buy_ticket', '20:05', 10
+      it_behaves_like 'buy_ticket', '18:05', 30
     end
 
     context 'when it is night' do
@@ -42,43 +113,45 @@ describe Movies::Theatre do
   end
 
   describe '#show' do
-    context 'when it is morning' do
-      subject { theatre.show('08:30') }
+    context 'when movie name is not defined' do
+      subject { theatre.show('09:30') }
 
-      it 'shows ancient movie' do
-        is_expected.to include('старый фильм')
+      it 'shows movie according defined filter' do
+        is_expected.to include('Comedy')
       end
     end
-    context 'when it is day' do
-      subject { theatre.show('13:15') }
+    context 'when movie name is defined in schedule' do
+      subject { theatre.show('15:15') }
 
-      it 'shows comedy or adventure' do
-        is_expected.to include('Comedy').or include('Adventure')
+      it 'shows this movie' do
+        is_expected.to include('The Terminator')
       end
     end
-    context 'when it is evening' do
-      subject { theatre.show('20:00') }
+    context "when we use 'exclude' in filter" do
+      subject { theatre.show('19:00') }
 
-      it 'shows drama or horror' do
-        is_expected.to include('Drama').or include('Horror')
+      it 'excludes movies by this parameter' do
+        is_expected.to_not include('USA')
       end
     end
 
-    context 'when it is night' do
+    context 'when there are no show' do
       subject { theatre.show('02:00') }
 
       it 'shows error message' do
-        is_expected.to eq('Извините, ночью сеансов нет.')
+        is_expected.to eq('Кинотеатр закрыт, касса не работает')
       end
     end
   end
 
   describe '#when?' do
-    it 'returns time according movie genre or year' do
-      expect(theatre.when?('The Wizard of Oz')).to eq('утром или днем')
-      expect(theatre.when?('Groundhog Day')).to eq('днем')
-      expect(theatre.when?('Seven Samurai')).to eq('вечером')
-      expect(theatre.when?('The Terminator')).to eq('этот фильм в нашем театре не транслируется')
+    it 'returns time according movie name, genre or year' do
+      expect(theatre.when?('The Sting')).to eq('Утренний сеанс: 09:00 - 11:00, Красный зал')
+      expect(theatre.when?('The Dark Knight Rises'))
+        .to eq('Дневной сеанс: 10:00 - 15:00, Синий зал')
+      expect(theatre.when?('The Terminator')).to eq('Спецпоказ: 11:00 - 16:00, Красный зал')
+      expect(theatre.when?('M')).to eq('Вечерний сеанс: 16:00 - 20:00, Красный зал, Синий зал')
+      expect(theatre.when?('The Wizard of Oz')).to eq('этот фильм в нашем театре не транслируется')
     end
   end
 end

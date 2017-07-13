@@ -27,7 +27,7 @@ module Movies
     end
 
     def valid_name?(name)
-      @countries.any? { |country| regex(name) === country }
+      @countries.any? { |country| regex(name) =~ country }
     end
   end
 end

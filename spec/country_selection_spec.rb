@@ -5,15 +5,15 @@ describe Movies::CountrySelection do
   let(:collection) { Movies::MovieCollection.new }
   let(:selection) { described_class.new(collection) }
 
-  it 'can work with double-word names' do
-    expect(selection.south_korea).to all( be_a(Movies::Movie) )
-  end
-
   context 'when movies from the country are in collection' do
     subject { selection.usa }
 
     it 'returns a list of movies' do
       is_expected.to all( be_a(Movies::Movie) )
+    end
+
+    it 'can work with double names' do
+      expect(selection.south_korea).to all( be_a(Movies::Movie) )
     end
   end
 
