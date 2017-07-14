@@ -1,6 +1,6 @@
 # coding: utf-8
 
-shared_examples 'buy_ticket' do |time, price, hall = ''|
+shared_examples 'buy_ticket' do |time, price, hall = nil|
   subject { theatre.buy_ticket(time, hall) }
 
   it 'returns a ticket' do
@@ -115,7 +115,7 @@ describe Movies::Theatre do
 
         it 'raises error' do
           expect { subject }.to raise_error(
-            ArgumentError, 'В это время проходят несколько сеансов. Укажите зал при покупке билета'
+            ArgumentError, 'В это время проходят несколько сеансов. Укажите зал (red, blue) при покупке билета'
           )
         end
       end

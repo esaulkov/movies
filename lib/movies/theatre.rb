@@ -6,7 +6,6 @@ require 'time'
 module Movies
   class Theatre < Cinema
     CINEMA_CLOSED_MSG = 'Кинотеатр закрыт, касса не работает'
-    MANY_PERIODS_MSG = 'В это время проходят несколько сеансов. Укажите зал при покупке билета'
     SCHEDULE_INVALID_MSG = 'Расписание некорректно (сеансы не должны пересекаться в одном зале)'
 
     include Cashbox
@@ -21,18 +20,18 @@ module Movies
       raise ArgumentError, SCHEDULE_INVALID_MSG unless schedule_valid?
     end
 
-    def buy_ticket(time, hall = '')
-      period = find_period(time, hall)
+    def buy_ticket(time, hall_name = nil)
+      period = find_period(time, hall_name)
       raise ArgumentError, CINEMA_CLOSED_MSG if period.nil?
 
       movie = find_movie(period)
-      hall = find_hall(period, hall)
+      hall = find_hall(period, hall_name)
       put_money(period.cost)
       "Вы купили билет на #{movie.name} в #{hall.title}"
     end
 
-    def show(time, hall = '')
-      period = find_period(time, hall)
+    def show(time, hall_name = nil)
+      period = find_period(time, hall_name)
       return CINEMA_CLOSED_MSG if period.nil?
 
       movie = find_movie(period)
@@ -64,7 +63,7 @@ module Movies
     end
 
     def find_hall(period, hall_name)
-      if hall_name.empty?
+      if hall_name.nil?
         period.halls.sort_by { |h| h.places * rand }.last
       else
         period.halls.select { |h| h.name == hall_name }.last
@@ -78,14 +77,22 @@ module Movies
     def find_period(time, hall_name)
       selection = @periods.select do |period|
         period.interval.include?(Time.parse(time)) &&
-          (hall_name.empty? || period.halls.map(&:name).include?(hall_name))
+          (hall_name.nil? || period.halls.map(&:name).include?(hall_name))
       end
-      raise ArgumentError, MANY_PERIODS_MSG if selection.size > 1
+      raise ArgumentError, many_periods_msg(selection) if selection.size > 1
       selection.first
     end
 
     def hall(hall_name, params)
       @halls << Hall.new(hall_name, params)
+    end
+
+    def many_periods_msg(selection)
+      halls = selection
+              .flat_map { |period| period.halls.map(&:name) }
+              .uniq
+              .join(', ')
+      "В это время проходят несколько сеансов. Укажите зал (#{halls}) при покупке билета"
     end
 
     def period(interval, &block)
