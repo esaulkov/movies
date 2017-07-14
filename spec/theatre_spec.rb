@@ -1,7 +1,7 @@
 # coding: utf-8
 
-shared_examples 'buy_ticket' do |time, price|
-  subject { theatre.buy_ticket(time) }
+shared_examples 'buy_ticket' do |time, price, hall = ''|
+  subject { theatre.buy_ticket(time, hall) }
 
   it 'returns a ticket' do
     is_expected.to start_with('Вы купили билет')
@@ -89,25 +89,35 @@ describe Movies::Theatre do
   end
 
   describe '#buy_ticket' do
-    context 'when it is morning' do
+    context 'when there is one seance' do
       it_behaves_like 'buy_ticket', '09:20', 10
-    end
-
-    context 'when it is day' do
       it_behaves_like 'buy_ticket', '15:45', 50
-    end
-
-    context 'when it is evening' do
       it_behaves_like 'buy_ticket', '18:05', 30
     end
 
-    context 'when it is night' do
+    context 'when there are no seances' do
       subject { theatre.buy_ticket('03:40') }
 
       it 'raises error' do
         expect { subject }.to raise_error(
           ArgumentError, 'Кинотеатр закрыт, касса не работает'
         )
+      end
+    end
+
+    context 'when there are many seances in the time' do
+      context 'when hall is defined' do
+        it_behaves_like 'buy_ticket', '14:00', 20, :blue
+      end
+
+      context 'when hall is not defined' do
+        subject { theatre.buy_ticket('14:00') }
+
+        it 'raises error' do
+          expect { subject }.to raise_error(
+            ArgumentError, 'В это время проходят несколько сеансов. Укажите зал при покупке билета'
+          )
+        end
       end
     end
   end

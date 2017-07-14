@@ -8,7 +8,7 @@ module Movies
     end
 
     def to_s
-      "#{name} - классический фильм (#{@genres}),"\
+      "#{name} - классический фильм (#{genres.join(', ')}),"\
       " режиссер #{producer}, снял также #{producer_movies}"
     end
 

@@ -27,15 +27,32 @@ begin
   puts movies.stats(:month)
 
   puts "\nLet's go to cinema..."
-  cinema = Movies::Theatre.new(movies)
+  cinema = Movies::Theatre.new(movies) do
+    hall :red, title: 'Красный зал', places: 100
+    hall :blue, title: 'Синий зал', places: 50
+
+    period '09:00'..'11:00' do
+      description 'Утренний сеанс'
+      filters genre: 'Comedy', year: 1900..1980
+      price 10
+      hall :blue
+    end
+
+    period '16:00'..'20:00' do
+      description 'Вечерний сеанс'
+      filters genre: %w[Action Drama], year: 2007..Time.now.year
+      price 20
+      hall :red, :blue
+    end
+  end
   puts "\nNow is 10:40. What is the movie?"
   puts cinema.show('10:40')
-  puts "\nAnd now is 14:47. What is the movie?"
-  puts cinema.show('14:47')
-  puts "\nI want to watch Metropolis. When I could to do it?"
-  puts cinema.when?('Metropolis')
+  puts "\nAnd now is 17:00. What is the movie?"
+  puts cinema.show('17:00')
+  puts "\nI want to watch Guardians of the Galaxy. When could I do it?"
+  puts cinema.when?('Guardians of the Galaxy')
   puts "\nPlease give me one ticket to the next show"
-  puts cinema.buy_ticket('20:00')
+  puts cinema.buy_ticket('17:40')
 
   puts "\nOur online cinema Netflix presents:"
   cinema = Movies::Netflix.new(movies)

@@ -30,9 +30,7 @@ module Movies
     attribute :actors, ArrayOfStrings
     attribute :collection, Object
 
-    def genre
-      genres
-    end
+    alias genre genres
 
     def length=(length_str)
       super length_str.to_i

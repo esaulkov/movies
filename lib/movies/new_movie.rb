@@ -8,7 +8,7 @@ module Movies
     end
 
     def to_s
-      "#{name} - новинка, вышло #{years_from_release}! (#{@genres})"
+      "#{name} - новинка, вышло #{years_from_release}! (#{genres.join(', ')})"
     end
 
     private

@@ -8,7 +8,7 @@ module Movies
     end
 
     def to_s
-      "#{name} - старый фильм (#{year} год), жанры: #{@genres}"
+      "#{name} - старый фильм (#{year} год), жанры: #{genres.join(', ')}"
     end
   end
 end

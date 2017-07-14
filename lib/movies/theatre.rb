@@ -5,25 +5,8 @@ require 'time'
 
 module Movies
   class Theatre < Cinema
-    SCHEDULE = {
-      утром: {period: :ancient},
-      днем: {genres: %w[Comedy Adventure]},
-      вечером: {genres: %w[Drama Horror]}
-    }.freeze
-
-    TIME_PERIODS = {
-      утром: Time.parse('05:00')..Time.parse('10:59'),
-      днем: Time.parse('11:00')..Time.parse('16:59'),
-      вечером: Time.parse('17:00')..Time.parse('23:59')
-    }.freeze
-
-    PRICES = {
-      утром: 3,
-      днем: 5,
-      вечером: 10
-    }.freeze
-
     CINEMA_CLOSED_MSG = 'Кинотеатр закрыт, касса не работает'
+    MANY_PERIODS_MSG = 'В это время проходят несколько сеансов. Укажите зал при покупке билета'
     SCHEDULE_INVALID_MSG = 'Расписание некорректно (сеансы не должны пересекаться в одном зале)'
 
     include Cashbox
@@ -38,18 +21,18 @@ module Movies
       raise ArgumentError, SCHEDULE_INVALID_MSG unless schedule_valid?
     end
 
-    def buy_ticket(time)
-      period = find_period(time)
+    def buy_ticket(time, hall = '')
+      period = find_period(time, hall)
       raise ArgumentError, CINEMA_CLOSED_MSG if period.nil?
 
       movie = find_movie(period)
-      hall = period.halls.sort_by { |h| h.places * rand }.last
+      hall = find_hall(period, hall)
       put_money(period.cost)
       "Вы купили билет на #{movie.name} в #{hall.title}"
     end
 
-    def show(time)
-      period = find_period(time)
+    def show(time, hall = '')
+      period = find_period(time, hall)
       return CINEMA_CLOSED_MSG if period.nil?
 
       movie = find_movie(period)
@@ -73,22 +56,32 @@ module Movies
     private
 
     def cross?(first, second)
-      begin1 = first.period.begin
-      end1 = first.period.end
-      begin2 = second.period.begin
-      end2 = second.period.end
+      begin1 = first.interval.begin
+      end1 = first.interval.end
+      begin2 = second.interval.begin
+      end2 = second.interval.end
       same_hall?(first, second) && end1 > begin2 && begin1 < end2
+    end
+
+    def find_hall(period, hall_name)
+      if hall_name.empty?
+        period.halls.sort_by { |h| h.places * rand }.last
+      else
+        period.halls.select { |h| h.name == hall_name }.last
+      end
     end
 
     def find_movie(period)
       choice(selection(period))
     end
 
-    def find_period(time)
-      @periods
-        .select { |show| show.period.include?(Time.parse(time)) }
-        .sort_by { |show| show.tickets * rand }
-        .last
+    def find_period(time, hall_name)
+      selection = @periods.select do |period|
+        period.interval.include?(Time.parse(time)) &&
+          (hall_name.empty? || period.halls.map(&:name).include?(hall_name))
+      end
+      raise ArgumentError, MANY_PERIODS_MSG if selection.size > 1
+      selection.first
     end
 
     def hall(hall_name, params)
@@ -96,11 +89,11 @@ module Movies
     end
 
     def period(interval, &block)
-      @periods << Show.new(interval, self, &block)
+      @periods << Period.new(interval, self, &block)
     end
 
     def same_hall?(first, second)
-      (first.halls - second.halls).size < first.halls.size
+      (first.halls & second.halls).any?
     end
 
     def schedule_valid?

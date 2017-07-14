@@ -2,11 +2,11 @@
 # frozen_string_literal: true
 
 module Movies
-  class Show
-    attr_reader :halls, :period, :filter, :name, :cost
+  class Period
+    attr_reader :cost, :filter, :halls, :interval, :name
 
-    def initialize(period, theatre, &block)
-      @period = Time.parse(period.min)..Time.parse(period.max)
+    def initialize(interval, theatre, &block)
+      @interval = Time.parse(interval.min)..Time.parse(interval.max)
       @theatre = theatre
       @halls = []
       instance_eval(&block) if block_given?
@@ -18,7 +18,7 @@ module Movies
 
     def to_s
       "#{@description}: "\
-      "#{@period.begin.strftime('%H:%M')} - #{@period.end.strftime('%H:%M')},"\
+      "#{@interval.begin.strftime('%H:%M')} - #{@interval.end.strftime('%H:%M')},"\
       " #{@halls.map(&:title).join(', ')}"
     end
 
@@ -33,7 +33,10 @@ module Movies
     end
 
     def hall(*names)
-      @halls = @theatre.halls.select { |hall| names.include?(hall.name) }
+      @halls = names.map do |name|
+        @theatre.halls.select { |hall| hall.name == name }.first ||
+          raise(ArgumentError, "Нет такого зала (#{name}) в кинотеатре")
+      end
     end
 
     def price(value)
