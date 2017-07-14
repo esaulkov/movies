@@ -6,7 +6,7 @@ describe Movies::ModernMovie do
       Movies::ModernMovie.new(
         name: 'The best movie',
         producer: "It's me",
-        actors: 'Benedict Cumberbatch, Bill Nighy, Keyra Knightley',
+        actors: 'Benedict Cumberbatch,Bill Nighy,Keyra Knightley',
         year: '1980'
       )
     end

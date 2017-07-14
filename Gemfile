@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'money', '~> 6.9.0'
 gem 'rubocop', '~> 0.49.1', require: false
+gem 'virtus', '~> 1.0.5'
 
 group :development, :test do
   gem 'rake', '~> 10.4.2'

@@ -4,36 +4,47 @@
 require 'date'
 
 module Movies
+  class ArrayOfStrings < Virtus::Attribute
+    def coerce(value)
+      value.nil? ? [] : value.split(',')
+    end
+  end
+
   class Movie
     PARAMS = %i[
       link name year country release genres length
-      rating producer actors collection
+      rating producer actors
     ].freeze
-    attr_reader :link, :name, :country, :release, :producer, :collection
 
-    def initialize(hsh = {})
-      hsh
-        .keep_if { |key, _| PARAMS.include?(key) }
-        .each { |key, value| instance_variable_set("@#{key}", value) }
-    end
+    include Virtus.model
 
-    def actors
-      @actors.split(',')
-    end
+    attribute :link, String
+    attribute :name, String
+    attribute :year, Integer
+    attribute :country, String
+    attribute :release, String
+    attribute :genres, ArrayOfStrings
+    attribute :length, Integer
+    attribute :rating, Float
+    attribute :producer, String
+    attribute :actors, ArrayOfStrings
+    attribute :collection, Object
 
-    def genre
-      genres
-    end
+    alias genre genres
 
-    def genres
-      @genres.split(',')
+    def length=(length_str)
+      super length_str.to_i
     end
 
     def matches?(key, value)
-      attribute = Array(public_send(key))
-      Array(value).product(attribute).any? do |filter_val, attr_val|
+      exclusion = key.to_s.split('_').first == 'exclude'
+      attribute = Array(public_send(key.to_s.split('_').last))
+
+      res = Array(value).product(attribute).any? do |filter_val, attr_val|
         filter_val === attr_val
       end
+
+      exclusion ^ res
     end
 
     def has_genre?(string)
@@ -47,10 +58,6 @@ module Movies
       "#<Movie #{self}>"
     end
 
-    def length
-      @length.to_i
-    end
-
     def month
       return if release.size < 5
       Date.strptime(release, '%Y-%m').month
@@ -60,17 +67,9 @@ module Movies
       self.class.to_s.scan(/(\w+)Movie/).flatten.first.downcase.to_sym
     end
 
-    def rating
-      @rating.to_f
-    end
-
     def to_s
-      "#{name} (#{release}; #{country}; #{@genres.to_s.tr(',', '/')})
+      "#{name} (#{release}; #{country}; #{genres.join('/')})
        - #{length} min"
-    end
-
-    def year
-      @year.to_i
     end
 
     def self.create(params)
