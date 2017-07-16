@@ -17,5 +17,6 @@ require 'movies/period'
 require 'movies/cinema'
 require 'movies/netflix'
 require 'movies/theatre'
+require 'movies/haml_presenter'
 
 I18n.enforce_available_locales = false
