@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'date'
+require 'yaml'
 
 module Movies
   class ArrayOfStrings < Virtus::Attribute
@@ -11,6 +12,7 @@ module Movies
   end
 
   class Movie
+    INFO_FILE = 'info.yml'
     PARAMS = %i[
       link name year country release genres length
       rating producer actors
@@ -54,6 +56,10 @@ module Movies
       genres.include?(string)
     end
 
+    def imdb_id
+      link.scan(%r{title/([\w]*)/}).flatten.first
+    end
+
     def inspect
       "#<Movie #{self}>"
     end
@@ -65,6 +71,14 @@ module Movies
 
     def period
       self.class.to_s.scan(/(\w+)Movie/).flatten.first.downcase.to_sym
+    end
+
+    def poster_path
+      load_info[:poster_path]
+    end
+
+    def title_in_russian
+      load_info[:title]
     end
 
     def to_s
@@ -80,6 +94,14 @@ module Movies
       when 2000..Date.today.year then NewMovie.new(params)
       else new(params)
       end
+    end
+
+    private
+
+    def load_info
+      raise ArgumentError, 'File not found!' unless File.exist?(INFO_FILE)
+      f = YAML.load_file(INFO_FILE)
+      f.select { |item| item.keys.first == imdb_id }.first.values.first
     end
   end
 end

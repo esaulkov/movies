@@ -46,6 +46,10 @@ module Movies
       @genres ||= movies.flat_map(&:genres).uniq
     end
 
+    def size
+      movies.size
+    end
+
     def sort_by(field)
       movies.sort_by(&field.to_sym)
     end

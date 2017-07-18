@@ -18,5 +18,6 @@ require 'movies/cinema'
 require 'movies/netflix'
 require 'movies/theatre'
 require 'movies/haml_presenter'
+require 'movies/tmdb_parser'
 
 I18n.enforce_available_locales = false

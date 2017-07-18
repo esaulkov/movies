@@ -17,7 +17,10 @@
           - collection.each.with_index(1) do |movie, ind|
             %tr
               %td= ind
-              %td= movie.name
+              %td
+                = movie.title_in_russian
+                %br
+                %img{src: "https://image.tmdb.org/t/p/w150_and_h225_bestv2#{movie.poster_path}"}
               %td= movie.year
               %td= movie.country
               %td= movie.genres.join(', ')
