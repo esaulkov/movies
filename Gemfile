@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'dotenv', '~> 2.2.1'
 gem 'haml', '~> 5.0.1'
 gem 'money', '~> 6.9.0'
+gem 'nokogiri', '~> 1.8.0'
 gem 'progress_bar', '~> 1.1.0'
 gem 'rubocop', '~> 0.49.1', require: false
 gem 'themoviedb-api', '~> 1.2.0'

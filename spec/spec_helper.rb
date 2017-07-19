@@ -11,5 +11,6 @@ Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].e
 RSpec.configure do |config|
   config.before(:each) do
     stub_request(:any, /api.themoviedb.org/).to_rack(FakeTmdb)
+    stub_request(:any, /imdb.com/).to_rack(FakeImdb)
   end
 end

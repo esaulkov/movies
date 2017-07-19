@@ -12,6 +12,7 @@ module Movies
   end
 
   class Movie
+    BUDGETS_FILE = 'budgets.yml'
     INFO_FILE = 'info.yml'
     PARAMS = %i[
       link name year country release genres length
@@ -47,6 +48,12 @@ module Movies
       end
 
       exclusion ^ res
+    end
+
+    def budget
+      raise ArgumentError, 'File not found!' unless File.exist?(BUDGETS_FILE)
+      budgets = YAML.load_file(BUDGETS_FILE)
+      budgets[imdb_id] || 'Unknown'
     end
 
     def has_genre?(string)

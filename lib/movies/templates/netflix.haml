@@ -12,7 +12,7 @@
       %section
         %table.table.table-striped.table-bordered
           %tr
-            - %w[# name year country genres rating length producer actors].each do |header|
+            - %w[# name year country genres rating length budget producer actors].each do |header|
               %th= header.capitalize
           - collection.each.with_index(1) do |movie, ind|
             %tr
@@ -26,5 +26,6 @@
               %td= movie.genres.join(', ')
               %td= movie.rating
               %td= movie.length
+              %td= movie.budget
               %td= movie.producer
               %td= movie.actors.join(', ')

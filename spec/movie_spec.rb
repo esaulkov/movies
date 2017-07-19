@@ -45,6 +45,46 @@ shared_examples 'return proper value from file' do |attr_name, attr_value|
 end
 
 describe Movies::Movie do
+  describe '#budget' do
+    let(:movie) do
+      Movies::Movie.create(
+        link: 'http://imdb.com/title/tt0133093/?ref_=chttp_tt_18',
+        name: 'The Matrix',
+        producer: 'Andy Wachowski',
+        year: '1999',
+        genres: 'Action,Sci-Fi'
+      )
+    end
+    let(:movie2) do
+      Movies::Movie.create(
+        link: 'http://imdb.com/title/tt0133095/?ref_=chttp_tt_18',
+        name: 'The Movie without budget',
+        year: '1899'
+      )
+    end
+
+    before(:example) do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(YAML).to receive(:load_file).and_return(
+        {"tt0133093"=>'$63,000,000'}
+      )
+    end
+
+    subject { movie.budget }
+
+    context 'when budget is defined' do
+      it 'returns the budget sum' do
+        is_expected.to eq('$63,000,000')
+      end
+    end
+
+    context 'when budget is not defined' do
+      subject { movie2.budget }
+
+      it { is_expected.to eq('Unknown') }
+    end
+  end
+
   describe '#create' do
     subject { Movies::Movie.create(params) }
 
