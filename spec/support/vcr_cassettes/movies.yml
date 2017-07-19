@@ -1,0 +1,85 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://api.themoviedb.org/3/find/tt0111161?api_key=1234567890abcdefghijklmnopqrstuvwxyz&external_source=imdb_id&language=ru
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (linux-gnu x86_64) ruby/2.3.0p0
+      Content-Type:
+      - application/json; charset=utf-8
+      Host:
+      - api.themoviedb.org
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - ETag, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After
+      Cache-Control:
+      - public, max-age=21600
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Wed, 19 Jul 2017 16:31:45 GMT
+      Etag:
+      - W/"92f1f06f4193bc15cec09f8585dac201"
+      Server:
+      - openresty
+      Vary:
+      - Accept-Encoding
+      X-Memc:
+      - HIT
+      X-Memc-Age:
+      - '2867'
+      X-Memc-Expires:
+      - '18733'
+      X-Memc-Key:
+      - ed5b093dab3db502f84f21390232220e
+      X-Ratelimit-Limit:
+      - '40'
+      X-Ratelimit-Remaining:
+      - '39'
+      X-Ratelimit-Reset:
+      - '1500481915'
+      Content-Length:
+      - '824'
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAA3VUS3PSUBj9K9esA9KXPHZaHRc+FlTRqePQWK6QlpJMEvDR
+        6QyP1rYDVhcuXKkLnXHjDAXShkfoX7j3H3m+C2Ww6oKQfM9zznfvt6vtWBWT
+        Zx3uloueq6We7WpGDq9a6qVRdLmuvTA2t3OOZWdtwytoKe36VvLpPXPdyfCM
+        edN8nUm/XfWMeGEh8zj5JLpl5zVdy/OSw7NmjsotJPRE7LmumTkttRhP6Jrl
+        mHmzZBSzRaOULxt5jpq8pM05PNMrkvVRgbO1gvHKLRilbZbmOb5je6alYivc
+        AexXiBLfRSCGsiVGTDZET4xlTdbFWPgiZPJI+OozYCKEbYTQULTlO/z3ydRm
+        G+KLrIkBjNUNnYkOU8modSgCOIbCZ5SNADFg6NOQh6hK6XJ/1lh0kdMT7SgT
+        PwGgQX1RfcAiqok4Fx08Q8T7qC9PZJXSZBPxnxlBRJ+AOvvilBqGsNXJcYyv
+        pViEGABcm5KbTFygm0KCor48kq2J6Qz1zykXP2Lr64oMnLIKFzAqbh3ZgiYf
+        wInJA5JMoR3JRoqBwxCeCRAK6cimPJhwY1T9Cj+yhgT4VEkP0NeY+CgGgFlV
+        8sH/DS91evkh34s+hBiDfZ2UGcoT0A1oKphIm7rVULdPJUYoRqAHIoBIv9Cl
+        R2P4hNB9OBAlQtlggEZDVLzOCMgYogAaSRIiro1+GBKmW5Ot6BwYmsUASd0J
+        NSJBUwDdIyQNyTaGBVSPp0eoQ9JNpxjMIOkEoaeGPCCppzOg/lew6qRSExyn
+        ajOCBt5+RM3HR1pAGiK2Tt4BZGpgrjTJLpU+Vc2hOfUkaGim4lWIqnhOWjSU
+        qP1L0ISJijbVOfZJpInwRGciA1X8z5gmM6EDSAQDEumC1CSJoriIDi9yw+XZ
+        nOHRlV1IJpcjsWRkcQk+23I97sz2hpu+9bByYymZXLdX7yynnQcJL+3evr/m
+        Gnene8O27HLRcEzvjZZKRmPxWGxR1y63gfgKxLgdovvvk4j8ipnj1mxxVSyP
+        Zw0sCrVjEtGVqWnTKpew3uIr8dgeFpPNHdcqzS1A2LzKX9/cNl0rN78oJ3YX
+        9P9M3/sN+q+LB1QFAAA=
+    http_version: 
+  recorded_at: Wed, 19 Jul 2017 16:31:46 GMT
+recorded_with: VCR 3.0.3

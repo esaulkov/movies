@@ -15,11 +15,11 @@ module Movies
 
     def run(collection)
       bar = ProgressBar.new(collection.size, :bar, :counter, :eta)
-      collection.map do |movie|
+      collection.each_with_object(Hash.new(0)) do |movie, info|
         tmdb_movie = Tmdb::Find.movie(movie.imdb_id, external_source: 'imdb_id').first
         bar.increment!
 
-        {movie.imdb_id => {title: tmdb_movie.title, poster_path: tmdb_movie.poster_path}}
+        info[movie.imdb_id] = {title: tmdb_movie.title, poster_path: tmdb_movie.poster_path}
       end
     end
 

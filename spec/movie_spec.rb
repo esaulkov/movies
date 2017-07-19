@@ -29,10 +29,10 @@ shared_examples 'return proper value from file' do |attr_name, attr_value|
   it "returns #{attr_name} from info file" do
     allow(File).to receive(:exist?).and_return(true)
     allow(YAML).to receive(:load_file).and_return(
-      [{"tt1555149"=>{
+      {"tt1555149"=>{
         :title=>"Элитный отряд: Враг внутри",
         :poster_path=>"/An36DV15SQupjsADzsBbYKMDNUs.jpg"
-      }}]
+      }}
     )
 
     expect(subject).to eq(attr_value)

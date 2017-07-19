@@ -4,12 +4,10 @@
 shared_examples 'load data from file' do
   context 'when data file exists' do
     let(:data) {
-      [
-        {"tt1555149"=>{
-          :title=>"Элитный отряд: Враг внутри",
-          :poster_path=>"/An36DV15SQupjsADzsBbYKMDNUs.jpg"
-        }}
-      ]
+      {"tt1555149"=>{
+        :title=>"Элитный отряд: Враг внутри",
+        :poster_path=>"/An36DV15SQupjsADzsBbYKMDNUs.jpg"
+      }}
     }
 
     before(:example) do
@@ -51,8 +49,8 @@ describe Movies::MovieCollection do
     end
   end
 
-  describe '#add_info' do
-    subject { collection.add_info }
+  describe '#additional_info' do
+    subject { collection.additional_info }
     it_behaves_like 'load data from file'
   end
 

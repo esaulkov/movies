@@ -24,9 +24,9 @@ module Movies
       end
     end
 
-    def add_info
+    def additional_info
       raise ArgumentError, 'File not found!' unless File.exist?(INFO_FILE)
-      @add_info ||= YAML.load_file(INFO_FILE)
+      @additional_info ||= YAML.load_file(INFO_FILE)
     end
 
     def all

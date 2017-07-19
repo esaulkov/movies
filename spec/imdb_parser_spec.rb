@@ -4,13 +4,15 @@
 describe Movies::ImdbParser do
   let(:collection) { Movies::MovieCollection.new.first(1) }
   let(:parser) { described_class.new }
-  let(:info) { {'tt0111161' => '$160,000,000'} }
+  let(:info) { {'tt0111161' => '$25,000,000'} }
 
   describe '#run' do
     subject { parser.run(collection) }
 
     it 'get movie attributes as result' do
-      expect { subject }.to change(parser, :budgets).from({}).to(info)
+      VCR.use_cassette('page') do
+        expect { subject }.to change(parser, :budgets).from({}).to(info)
+      end
     end
   end
 

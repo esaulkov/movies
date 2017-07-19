@@ -76,11 +76,11 @@ module Movies
     end
 
     def poster_path
-      load_info[:poster_path]
+      additional_info[:poster_path]
     end
 
     def title_in_russian
-      load_info[:title]
+      additional_info[:title]
     end
 
     def to_s
@@ -100,8 +100,8 @@ module Movies
 
     private
 
-    def load_info
-      @collection.add_info.select { |item| item.keys.first == imdb_id }.first.values.first
+    def additional_info
+      @additional_info ||= @collection.additional_info[imdb_id]
     end
   end
 end
