@@ -24,7 +24,7 @@ module Movies
     end
 
     def save(data)
-      File.write(Movies::Movie::INFO_FILE, data.to_yaml)
+      File.write(Movies::MovieCollection::INFO_FILE, data.to_yaml)
     end
   end
 end

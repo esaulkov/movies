@@ -27,7 +27,7 @@ module Movies
     end
 
     def save
-      File.write(Movies::Movie::BUDGETS_FILE, @budgets.to_yaml)
+      File.write(Movies::MovieCollection::BUDGETS_FILE, @budgets.to_yaml)
     end
 
     private

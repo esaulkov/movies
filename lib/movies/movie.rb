@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require 'date'
-require 'yaml'
 
 module Movies
   class ArrayOfStrings < Virtus::Attribute
@@ -12,8 +11,6 @@ module Movies
   end
 
   class Movie
-    BUDGETS_FILE = 'budgets.yml'
-    INFO_FILE = 'info.yml'
     PARAMS = %i[
       link name year country release genres length
       rating producer actors
@@ -51,9 +48,7 @@ module Movies
     end
 
     def budget
-      raise ArgumentError, 'File not found!' unless File.exist?(BUDGETS_FILE)
-      budgets = YAML.load_file(BUDGETS_FILE)
-      budgets[imdb_id] || 'Unknown'
+      @collection.budgets[imdb_id] || 'Unknown'
     end
 
     def has_genre?(string)
@@ -106,9 +101,7 @@ module Movies
     private
 
     def load_info
-      raise ArgumentError, 'File not found!' unless File.exist?(INFO_FILE)
-      f = YAML.load_file(INFO_FILE)
-      f.select { |item| item.keys.first == imdb_id }.first.values.first
+      @collection.add_info.select { |item| item.keys.first == imdb_id }.first.values.first
     end
   end
 end

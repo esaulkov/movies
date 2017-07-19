@@ -2,10 +2,13 @@
 # frozen_string_literal: true
 
 require 'csv'
+require 'yaml'
 
 module Movies
   class MovieCollection
+    BUDGETS_FILE = 'budgets.yml'
     DEFAULT_PATH = 'movies.txt'
+    INFO_FILE = 'info.yml'
 
     include Enumerable
 
@@ -21,8 +24,18 @@ module Movies
       end
     end
 
+    def add_info
+      raise ArgumentError, 'File not found!' unless File.exist?(INFO_FILE)
+      @add_info ||= YAML.load_file(INFO_FILE)
+    end
+
     def all
       movies
+    end
+
+    def budgets
+      raise ArgumentError, 'File not found!' unless File.exist?(BUDGETS_FILE)
+      @budgets ||= YAML.load_file(BUDGETS_FILE)
     end
 
     def each(&block)

@@ -21,7 +21,8 @@ shared_examples 'return proper value from file' do |attr_name, attr_value|
     Movies::Movie.create(
       link: 'http://imdb.com/title/tt1555149/?ref_=chttp_tt_250',
       name: 'Elite Squad: The Enemy Within',
-      year: '2010'
+      year: '2010',
+      collection: collection
     )
   end
 
@@ -45,6 +46,8 @@ shared_examples 'return proper value from file' do |attr_name, attr_value|
 end
 
 describe Movies::Movie do
+  let(:collection) { Movies::MovieCollection.new }
+
   describe '#budget' do
     let(:movie) do
       Movies::Movie.create(
@@ -52,14 +55,16 @@ describe Movies::Movie do
         name: 'The Matrix',
         producer: 'Andy Wachowski',
         year: '1999',
-        genres: 'Action,Sci-Fi'
+        genres: 'Action,Sci-Fi',
+        collection: collection
       )
     end
     let(:movie2) do
       Movies::Movie.create(
         link: 'http://imdb.com/title/tt0133095/?ref_=chttp_tt_18',
         name: 'The Movie without budget',
-        year: '1899'
+        year: '1899',
+        collection: collection
       )
     end
 
