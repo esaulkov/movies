@@ -8,7 +8,7 @@ module Movies
     TEMPLATE_DIR = 'lib/movies/templates/'
 
     def initialize(object)
-      template = File.read("#{convert(object.class.to_s)}.haml")
+      template = File.read("#{template_name(object.class.to_s)}.haml")
       @engine = Haml::Engine.new(template)
       @object = object
     end
@@ -19,7 +19,7 @@ module Movies
 
     private
 
-    def convert(class_name)
+    def template_name(class_name)
       class_name
         .gsub(/Movies::/, TEMPLATE_DIR)
         .gsub(/::/, '/')

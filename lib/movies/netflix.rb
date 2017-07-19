@@ -43,7 +43,7 @@ module Movies
       display(movie)
     end
 
-    def output
+    def render
       output = HamlPresenter.new(self).show
       File.write('result.html', output)
     end
