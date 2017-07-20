@@ -6,6 +6,6 @@ $LOAD_PATH.unshift(File.expand_path('lib'))
 require 'movies'
 
 collection = Movies::MovieCollection.new
-parser = Movies::TmdbParser.new
+parser = Movies::Utils::TmdbParser.new
 data = parser.run(collection)
 parser.save(data)

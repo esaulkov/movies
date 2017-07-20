@@ -1,7 +1,7 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-describe Movies::GenreSelection do
+describe Movies::Cinema::GenreSelection do
   let(:collection) { Movies::MovieCollection.new }
   let(:genres) { %w[Drama Comedy Sci-Fi] }
 
