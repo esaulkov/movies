@@ -47,11 +47,19 @@ module Movies
       exclusion ^ res
     end
 
+    def budget
+      @collection.budgets[imdb_id] || 'Unknown'
+    end
+
     def has_genre?(string)
       unless @collection.genres.include?(string)
         raise ArgumentError, "This genre (#{string}) does not exist"
       end
       genres.include?(string)
+    end
+
+    def imdb_id
+      link.scan(%r{title/([\w]*)/}).flatten.first
     end
 
     def inspect
@@ -67,6 +75,14 @@ module Movies
       self.class.to_s.scan(/(\w+)Movie/).flatten.first.downcase.to_sym
     end
 
+    def poster_path
+      additional_info[:poster_path]
+    end
+
+    def title_in_russian
+      additional_info[:title]
+    end
+
     def to_s
       "#{name} (#{release}; #{country}; #{genres.join('/')})
        - #{length} min"
@@ -80,6 +96,12 @@ module Movies
       when 2000..Date.today.year then NewMovie.new(params)
       else new(params)
       end
+    end
+
+    private
+
+    def additional_info
+      @additional_info ||= @collection.additional_info[imdb_id]
     end
   end
 end

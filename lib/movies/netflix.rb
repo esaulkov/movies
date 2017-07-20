@@ -9,7 +9,7 @@ module Movies
 
     extend Cashbox
 
-    attr_reader :balance, :filters
+    attr_reader :balance, :filters, :collection
 
     def initialize(collection)
       super
@@ -41,6 +41,11 @@ module Movies
 
       @balance -= movie.price
       display(movie)
+    end
+
+    def render
+      output = HamlPresenter.new(self).show
+      File.write('result.html', output)
     end
 
     def pay(sum)

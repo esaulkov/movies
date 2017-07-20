@@ -1,0 +1,31 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equip" => "Content-Type"}
+    %title Онлайн-кинотеатр Netflix представляет...
+    %link{:rel => "stylesheet", :href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", :integrity => "sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", :crossorigin => "anonymous"}
+    %script{:src => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", :integrity => "sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", :crossorigin => "anonymous"}
+  %body
+    %section#container
+      %header.clearfix
+        %h1= "Фильмы в нашей коллекции (всего #{collection.all.size})"
+      %section
+        %table.table.table-striped.table-bordered
+          %tr
+            - %w[# name year country genres rating length budget producer actors].each do |header|
+              %th= header.capitalize
+          - collection.each.with_index(1) do |movie, ind|
+            %tr
+              %td= ind
+              %td
+                = movie.title_in_russian
+                %br
+                %img{src: "https://image.tmdb.org/t/p/w150_and_h225_bestv2#{movie.poster_path}"}
+              %td= movie.year
+              %td= movie.country
+              %td= movie.genres.join(', ')
+              %td= movie.rating
+              %td= movie.length
+              %td= movie.budget
+              %td= movie.producer
+              %td= movie.actors.join(', ')
