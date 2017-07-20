@@ -27,3 +27,8 @@ $ bin/imdb_parser.rb
 ```
 
 This info will be saved in `data` directory
+
+Example of cinema:
+```
+$ bin/netflix.rb --pay 100 --show genre:Action,country:USA
+```
