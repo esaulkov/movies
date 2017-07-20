@@ -6,7 +6,10 @@ module Movies
     class CountrySelection
       def initialize(collection)
         @collection = collection
-        @countries = @collection.stats(:country).keys.map { |country| country.downcase.tr(' ', '_') }
+        @countries = @collection
+                     .stats(:country)
+                     .keys
+                     .map { |country| country.downcase.tr(' ', '_') }
       end
 
       def method_missing(name)

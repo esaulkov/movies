@@ -5,7 +5,7 @@ require 'csv'
 require 'yaml'
 
 module Movies
-  class MovieCollection    
+  class MovieCollection
     DATA_FOLDER = 'data'
     BUDGETS_FILE = "#{DATA_FOLDER}/budgets.yml"
     DEFAULT_PATH = "#{DATA_FOLDER}/movies.txt"
