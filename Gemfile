@@ -15,7 +15,6 @@ gem 'virtus', '~> 1.0.5'
 group :development, :test do
   gem 'rake', '~> 10.4.2'
   gem 'rspec', '~> 3.6.0'
-  gem 'sinatra', '~> 2.0.0'
   gem 'vcr', '~> 3.0.3'
   gem 'webmock', '~> 3.0.1'
 end
