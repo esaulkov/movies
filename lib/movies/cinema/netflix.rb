@@ -2,8 +2,14 @@
 # frozen_string_literal: true
 
 module Movies
+  # Namespace for classes that work with cinema and its elements
   module Cinema
+    # Class for online cinema
+    # @attr_reader [Money] balance User balance. Decreases by the movie show.
+    # @attr_reader [Array<Hash, Proc>] filters User filters for this cinema.
+    # @attr_reader [MovieCollection] collection movie collection that used by this cinema.
     class Netflix < Cinema
+      # Helpful messages
       MONEY_MSG = 'Не хватает денег для просмотра, пополните, пожалуйста, баланс.'
       NEGATIVE_VALUE_MSG = 'Нельзя пополнить баланс на отрицательную сумму'
       NOT_FOUND_MSG = 'Такой фильм не найден'
@@ -12,26 +18,75 @@ module Movies
 
       attr_reader :balance, :filters, :collection
 
+      # Creates an instance of cinema
+      # @param [MovieCollection] collection movie collection that used by this cinema.
+      # @return [Netflix] an instance of Netflix
       def initialize(collection)
         super
         @balance = Money.new(0)
         @filters = {}
       end
 
+      # Prepares cinema collection to filter by country
+      # @example Find all movies from Spain
+      #   cinema.by_country.spain
+      #   => [#<Movie Pan's Labyrinth - новинка, вышло 11 лет назад! (Drama, Fantasy, War)>]
+      #
+      # @return [CountrySelection]
       def by_country
         CountrySelection.new(@collection)
       end
 
+      # Prepares cinema collection to filter by genre
+      # @example Find all music movies
+      #   cinema.by_genre.music =>
+      #   [#<Movie Whiplash - новинка, вышло 3 года назад! (Drama, Music)>,
+      #   #<Movie Departures - новинка, вышло 9 лет назад! (Drama, Music)>]
+      #
+      # @return [GenreSelection]
       def by_genre
         GenreSelection.new(@collection)
       end
 
+      # Saves user filter or creates new from existing filter
+      # @param [Symbol] name filter name
+      # @param [Symbol] from ('') name of another filter which should be used
+      # @param [String, Integer] arg ('') argument value that used by the new filter
+      # @param [Proc] block
+      #
+      # @example Create filter from a block
+      #   cinema.define_filter(:sci_fi) do |movie, year|
+      #     movie.year < year && movie.genre.include?('Sci-Fi')
+      #   end
+      #   => <Proc:0x00000002707950@(irb):5>
+      #
+      # @example Create filter from another filter
+      #   cinema.define_filter(:ancient_sci_fi, from: :sci_fi, arg: 1941)
+      #   => <Proc:0x0000000271eab0@(irb):8>
+      #
+      # @return [Proc] filter that can be used later
       def define_filter(name, from: nil, arg: nil, &block)
         return @filters[name] = block if from.nil?
 
         @filters[name] = ->(movie) { @filters[from].call(movie, arg) }
       end
 
+      # Shows movie from cinema collection by params
+      # @param [Hash] params ({}) list of params for the movie
+      # @param [Proc] block condition written at Ruby
+      #
+      # @example By params
+      #   cinema.show(genre: 'Comedy', period: :modern)
+      #   => "Now showing: Cinema Paradiso - современное кино (Comedy, Drama),
+      #       играют Philippe Noiret, Enzo Cannavale, Antonella Attili"
+      #
+      # @example By block
+      #   cinema.show { |movie| movie.genre.include?('Action') && movie.year > 2003 }
+      #   => "Now showing: Batman Begins - новинка, вышло 12 лет назад! (Action, Adventure)"
+      #
+      # @raise [ArgumentError] when balance is lesser than movie price
+      #
+      # @return [String] string with movie description
       def show(params = {}, &block)
         args = process_filters(params)
         args << block if block_given?
@@ -44,17 +99,31 @@ module Movies
         display(movie)
       end
 
+      # Renders movie collection to HTML format
+      # @return [Fixnum] number of bytes written
       def render
         output = Utils::HamlPresenter.new(self).show
         File.write('data/result.html', output)
       end
 
+      # Increases sum of balance
+      # @param [Integer] sum of money
+      #
+      # @raise [ArgumentError] when argument is negative
+      #
+      # @return [Money] sum of balance
       def pay(sum)
         raise ArgumentError, NEGATIVE_VALUE_MSG if sum.negative?
         @balance += Money.new(sum * 100.0)
         Netflix.put_money(sum.to_f)
       end
 
+      # Defines price of the movie
+      # @param [String] name movie name
+      #
+      # @raise [ArgumentError] when movie does not found
+      #
+      # @return [String] movie price
       def how_much?(name)
         movie = @collection.filter(name: name).first
         raise ArgumentError, NOT_FOUND_MSG if movie.nil?
@@ -63,6 +132,13 @@ module Movies
 
       private
 
+      # Converts filter by the argument value
+      # @private
+      #
+      # @param [Symbol] key filter name
+      # @param [Boolean, String, Integer] value can be true, false or something else
+      #
+      # @return [Proc] filter
       def convert_filter(key, value)
         case value
         when true then @filters[key]
@@ -71,6 +147,11 @@ module Movies
         end
       end
 
+      # Tries to find and convert filter by params. Otherwise returns param pair as is.
+      # @private
+      # @param [Hash] params user parameters
+      #
+      # @return [Array<Proc, Hash>] filters to show movie
       def process_filters(params)
         params.map do |key, value|
           @filters.key?(key) ? convert_filter(key, value) : {key => value}

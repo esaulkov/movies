@@ -4,6 +4,7 @@
 /coverage/
 /data/*.html
 /data/*.yml
+/doc/
 /InstalledFiles
 /pkg/
 /spec/reports/
