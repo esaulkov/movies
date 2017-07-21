@@ -7,8 +7,6 @@ module Movies
     # Class for online cinema
     # @!attribute [r] balance
     #   @return [Money] user balance. Decreases by the movie show.
-    # @!attribute [r] filters
-    #   @return [Array<Hash, Proc>] user filters for this cinema.
     # @!attribute [r] collection
     #   @return [MovieCollection] movie collection that used by this cinema.
     class Netflix < Cinema
@@ -19,7 +17,7 @@ module Movies
 
       extend Cashbox
 
-      attr_reader :balance, :filters, :collection
+      attr_reader :balance, :collection
 
       # Creates an instance of cinema
       # @param [MovieCollection] collection movie collection that used by this cinema.

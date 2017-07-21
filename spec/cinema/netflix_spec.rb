@@ -19,14 +19,14 @@ describe Movies::Cinema::Netflix do
   end
 
   describe '#define_filter' do
-    before do
+    subject do
       netflix.define_filter(:my_wish) do |movie|
         movie.year > 2000 && movie.producer == 'Christopher Nolan'
       end
     end
 
     it 'saves the filter in instance attribute' do
-      expect(netflix.filters).to include(my_wish: an_instance_of(Proc))
+      expect(subject).to be_an_instance_of(Proc)
     end
   end
 
