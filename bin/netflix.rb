@@ -4,6 +4,7 @@
 
 $LOAD_PATH.unshift(File.expand_path('lib'))
 require 'movies'
+require 'slop'
 
 opts = Slop.parse do |o|
   o.int '--pay', 'sum to pay'

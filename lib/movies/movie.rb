@@ -147,7 +147,7 @@ module Movies
     end
 
     # Base method to select proper class of movie. It depends on release year.
-    # @params [Hash] params movie params
+    # @param [Hash] params movie params
     #
     # @return [Movie] created object
     def self.create(params)

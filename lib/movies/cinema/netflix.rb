@@ -5,9 +5,12 @@ module Movies
   # Namespace for classes that work with cinema and its elements
   module Cinema
     # Class for online cinema
-    # @attr_reader [Money] balance User balance. Decreases by the movie show.
-    # @attr_reader [Array<Hash, Proc>] filters User filters for this cinema.
-    # @attr_reader [MovieCollection] collection movie collection that used by this cinema.
+    # @!attribute [r] balance
+    #   @return [Money] user balance. Decreases by the movie show.
+    # @!attribute [r] filters
+    #   @return [Array<Hash, Proc>] user filters for this cinema.
+    # @!attribute [r] collection
+    #   @return [MovieCollection] movie collection that used by this cinema.
     class Netflix < Cinema
       # Helpful messages
       MONEY_MSG = 'Не хватает денег для просмотра, пополните, пожалуйста, баланс.'
@@ -72,10 +75,22 @@ module Movies
       end
 
       # Shows movie from cinema collection by params
-      # @param [Hash] params ({}) list of params for the movie
-      # @param [Proc] block condition written at Ruby
+      # @param [Hash] opts ({}) list of params that will be used for movie selection
+      # @option opts [String] name movie name
+      # @option opts [Symbol] period one of the list(:ancient, :classic, :modern, :new),
+      #   depends on movie year
+      # @option opts [String, Array<String>] genre specifies genre of selected movie.
+      #   Could be array, if you want to watch one of several genres (e.g. Adventure or Action)
+      # @option opts [String] country movie country
+      # @option opts [Integer, Range] year release year or range of years
+      # @option opts [String] producer movie producer
+      # @option opts [String, Array<String>] actors show movie with defined actor (one or more)
+      # @param [Proc] block condition to select movie from collection, written at Ruby.
+      #   Could be used for comparising ({ |movie| movie.rating > 8.1 }),
+      #   negation ({ |movie| !movie.country == 'Japan' })
+      #   or weak filter ({ |movie| movie.name.include?('Termin') })
       #
-      # @example By params
+      # @example By opts
       #   cinema.show(genre: 'Comedy', period: :modern)
       #   => "Now showing: Cinema Paradiso - современное кино (Comedy, Drama),
       #       играют Philippe Noiret, Enzo Cannavale, Antonella Attili"
@@ -87,8 +102,8 @@ module Movies
       # @raise [ArgumentError] when balance is lesser than movie price
       #
       # @return [String] string with movie description
-      def show(params = {}, &block)
-        args = process_filters(params)
+      def show(opts = {}, &block)
+        args = process_filters(opts)
         args << block if block_given?
         selection = @collection.filter(args)
         movie = choice(selection)
@@ -100,18 +115,19 @@ module Movies
       end
 
       # Renders movie collection to HTML format
-      # @return [Fixnum] number of bytes written
+      # @return [String] result message (success or not)
       def render
         output = Utils::HamlPresenter.new(self).show
-        File.write('data/result.html', output)
+        res = File.write('data/result.html', output)
+        res > 0 ? 'Cinema rendered successfully' : 'Nothing to render'
       end
 
-      # Increases sum of balance
+      # Increases sum of balance. This balance is required to show movie.
+      # Every time when 'show' method is called, balance is decreased accordingly movie price.
+      #
       # @param [Integer] sum of money
       #
       # @raise [ArgumentError] when argument is negative
-      #
-      # @return [Money] sum of balance
       def pay(sum)
         raise ArgumentError, NEGATIVE_VALUE_MSG if sum.negative?
         @balance += Money.new(sum * 100.0)
