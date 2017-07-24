@@ -1,8 +1,8 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-describe Movies::Cashbox do
-  let(:including_class) { Class.new { include Movies::Cashbox } }
+describe Movies::Cinema::Cashbox do
+  let(:including_class) { Class.new { include Movies::Cinema::Cashbox } }
   let(:dummy) { including_class.new }
 
   describe '.cash' do

@@ -13,10 +13,10 @@ shared_examples 'buy_ticket' do |time, price, hall = nil|
   end
 end
 
-describe Movies::Theatre do
+describe Movies::Cinema::Theatre do
   let! (:collection) { Movies::MovieCollection.new }
   let(:theatre) do
-    Movies::Theatre.new(collection) do
+    described_class.new(collection) do
       hall :red, title: 'Красный зал', places: 100
       hall :blue, title: 'Синий зал', places: 50
       period '09:00'..'11:00' do
@@ -50,7 +50,7 @@ describe Movies::Theatre do
   end
 
   describe '#new' do
-    subject { Movies::Theatre.new(collection) { return 'It is a block!' } }
+    subject { described_class.new(collection) { return 'It is a block!' } }
 
     it 'can accept a block' do
       is_expected.to eq('It is a block!')
@@ -58,7 +58,7 @@ describe Movies::Theatre do
 
     context 'when schedule is invalid' do
       subject do
-        Movies::Theatre.new(collection) do
+        described_class.new(collection) do
           hall :red, title: 'Красный зал', places: 100
           period '09:00'..'11:00' do
             description 'Утренний сеанс'

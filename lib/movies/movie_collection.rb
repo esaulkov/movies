@@ -6,9 +6,10 @@ require 'yaml'
 
 module Movies
   class MovieCollection
-    BUDGETS_FILE = 'budgets.yml'
-    DEFAULT_PATH = 'movies.txt'
-    INFO_FILE = 'info.yml'
+    DATA_FOLDER = 'data'
+    BUDGETS_FILE = "#{DATA_FOLDER}/budgets.yml"
+    DEFAULT_PATH = "#{DATA_FOLDER}/movies.txt"
+    INFO_FILE = "#{DATA_FOLDER}/info.yml"
 
     include Enumerable
 

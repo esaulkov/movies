@@ -1,9 +1,10 @@
 *.gem
 *.rbc
-/*.yml
-/*.html
 /.config
 /coverage/
+/data/*.html
+/data/*.yml
+/doc/
 /InstalledFiles
 /pkg/
 /spec/reports/

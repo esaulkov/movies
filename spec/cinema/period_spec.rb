@@ -1,10 +1,10 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-describe Movies::Period do
+describe Movies::Cinema::Period do
   let(:collection) { Movies::MovieCollection.new }
   let(:cinema) do
-    Movies::Theatre.new(collection) do
+    Movies::Cinema::Theatre.new(collection) do
       hall :red, title: 'Красный зал', places: 100
       hall :blue, title: 'Синий зал', places: 50
     end

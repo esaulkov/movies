@@ -2,31 +2,31 @@
 
 RSpec::Matchers.define_negated_matcher :not_match, :match
 
-describe Movies::Netflix do
+describe Movies::Cinema::Netflix do
   let! (:collection) { Movies::MovieCollection.new }
-  let (:netflix) { Movies::Netflix.new(collection) }
+  let (:netflix) { described_class.new(collection) }
 
   describe '#by_country' do
     subject { netflix.by_country }
 
-    it { is_expected.to be_an_instance_of(Movies::CountrySelection) }
+    it { is_expected.to be_an_instance_of(Movies::Cinema::CountrySelection) }
   end
 
   describe '#by_genre' do
     subject { netflix.by_genre }
 
-    it { is_expected.to be_an_instance_of(Movies::GenreSelection) }
+    it { is_expected.to be_an_instance_of(Movies::Cinema::GenreSelection) }
   end
 
   describe '#define_filter' do
-    before do
+    subject do
       netflix.define_filter(:my_wish) do |movie|
         movie.year > 2000 && movie.producer == 'Christopher Nolan'
       end
     end
 
     it 'saves the filter in instance attribute' do
-      expect(netflix.filters).to include(my_wish: an_instance_of(Proc))
+      expect(subject).to be_an_instance_of(Proc)
     end
   end
 
@@ -117,8 +117,9 @@ describe Movies::Netflix do
     end
 
     it 'increases amount in cashbox' do
-      Movies::Netflix.take('Bank')
-      expect { netflix.pay(75) }.to change(Movies::Netflix, :cash).from('$0.00').to('$75.00')
+      Movies::Cinema::Netflix.take('Bank')
+      expect { netflix.pay(75) }
+        .to change(Movies::Cinema::Netflix, :cash).from('$0.00').to('$75.00')
     end
   end
 

@@ -27,7 +27,7 @@ begin
   puts movies.stats(:month)
 
   puts "\nLet's go to cinema..."
-  cinema = Movies::Theatre.new(movies) do
+  cinema = Movies::Cinema::Theatre.new(movies) do
     hall :red, title: 'Красный зал', places: 100
     hall :blue, title: 'Синий зал', places: 50
 
@@ -55,7 +55,7 @@ begin
   puts cinema.buy_ticket('17:40')
 
   puts "\nOur online cinema Netflix presents:"
-  cinema = Movies::Netflix.new(movies)
+  cinema = Movies::Cinema::Netflix.new(movies)
   cinema.pay(30)
   puts cinema.show(genre: 'Comedy', period: :modern)
   puts "\nThe next movie is:"
@@ -83,11 +83,11 @@ begin
   puts "\nHow expensive is this movie (Batman Begins)?"
   puts cinema.how_much?('Batman Begins')
   puts "\nWell, how much is in cashbox?"
-  puts Movies::Netflix.cash
+  puts Movies::Cinema::Netflix.cash
   puts "\nI'm from National Bank. Give me please these money."
-  puts Movies::Netflix.take('Bank')
+  puts Movies::Cinema::Netflix.take('Bank')
   puts "\nI'm not from the bank. But I want these money too!"
-  puts Movies::Netflix.take('Jonny')
+  puts Movies::Cinema::Netflix.take('Jonny')
 rescue ArgumentError => e
   puts '**********************************'
   puts e.message

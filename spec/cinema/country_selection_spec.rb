@@ -1,7 +1,7 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-describe Movies::CountrySelection do
+describe Movies::Cinema::CountrySelection do
   let(:collection) { Movies::MovieCollection.new }
   let(:selection) { described_class.new(collection) }
 
