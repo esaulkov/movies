@@ -5,10 +5,6 @@ module Movies
   # Namespace for classes that work with cinema and its elements
   module Cinema
     # Class for online cinema
-    # @!attribute [r] balance
-    #   @return [Money] user balance. Decreases by the movie show.
-    # @!attribute [r] collection
-    #   @return [MovieCollection] movie collection that used by this cinema.
     class Netflix < Cinema
       # Helpful messages
       MONEY_MSG = 'Не хватает денег для просмотра, пополните, пожалуйста, баланс.'
@@ -17,7 +13,10 @@ module Movies
 
       extend Cashbox
 
-      attr_reader :balance, :collection
+      # @return [Money] user balance. Decreases by the movie show.
+      attr_reader :balance
+      # @return [MovieCollection] movie collection that used by this cinema.
+      attr_reader :collection
 
       # Creates an instance of cinema
       # @param [MovieCollection] collection movie collection that used by this cinema.
